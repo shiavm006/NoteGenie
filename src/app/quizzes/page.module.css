@@ -1,0 +1,309 @@
+.container {
+    width: 100%;
+  }
+  
+  .header {
+    margin-bottom: 3rem;
+    text-align: center;
+  }
+  
+  .title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  
+  .subtitle {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+  }
+  
+  .filterContainer {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  .clearButton,
+  .filterButton {
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.3s ease;
+    flex: 1;
+  }
+  
+  .clearButton {
+    background-color: white;
+    color: #000;
+    border: 1px solid #000;
+  }
+  
+  .clearButton:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .filterButton {
+    background-color: #000;
+    color: white;
+    border: 1px solid #000;
+  }
+  
+  .filterButton:hover {
+    background-color: #333;
+  }
+  
+  .quizCollection,
+  .quizDemo,
+  .actionsSection {
+    margin-bottom: 4rem;
+  }
+  
+  .sectionTitle {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+  
+  .sectionDescription {
+    color: #666;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  
+  .quizActions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .bookmarkButton,
+  .startButton {
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+  
+  .bookmarkButton {
+    background-color: white;
+    color: #000;
+    border: 1px solid #000;
+  }
+  
+  .bookmarkButton:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .startButton {
+    background-color: #000;
+    color: white;
+    border: 1px solid #000;
+  }
+  
+  .startButton:hover {
+    background-color: #333;
+  }
+  
+  .quizGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+  
+  .quizCard {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .quizCard:hover {
+    transform: translateY(-5px);
+  }
+  
+  .quizImage {
+    height: 150px;
+    background-color: #f5f5f5;
+  }
+  
+  .imagePlaceholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+  }
+  
+  .quizInfo {
+    padding: 1.5rem;
+  }
+  
+  .quizTitle {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .quizSubject,
+  .quizDifficulty,
+  .quizQuestions {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .startQuizButton {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #000;
+    color: white;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-top: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .startQuizButton:hover {
+    background-color: #333;
+  }
+  
+  .resultsContainer {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .scoreSection {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .scoreTitle {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .scoreValue {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+  
+  .answersSection {
+    margin-bottom: 2rem;
+  }
+  
+  .answersTitle {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  .answersGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+  
+  .answerItem {
+    padding: 0.5rem;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    text-align: center;
+  }
+  
+  .actionButtons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .retryButton,
+  .submitButton {
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+  
+  .retryButton {
+    background-color: white;
+    color: #000;
+    border: 1px solid #000;
+  }
+  
+  .retryButton:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .submitButton {
+    background-color: #000;
+    color: white;
+    border: 1px solid #000;
+  }
+  
+  .submitButton:hover {
+    background-color: #333;
+  }
+  
+  .actionCard {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .actionIcon {
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    background-color: #f5f5f5;
+    border-radius: 50%;
+  }
+  
+  .actionContent {
+    flex: 1;
+  }
+  
+  .actionTitle {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .actionDescription {
+    color: #666;
+    font-size: 0.9rem;
+  }
+  
+  @media (max-width: 768px) {
+    .quizGrid {
+      grid-template-columns: 1fr;
+    }
+  
+    .answersGrid {
+      grid-template-columns: 1fr;
+    }
+  
+    .actionButtons {
+      flex-direction: column;
+    }
+  }
+  
