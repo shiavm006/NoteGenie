@@ -1,0 +1,49 @@
+.container {
+  padding: 20px;
+}
+
+.filters {
+  margin-bottom: 20px;
+  display: flex; /* Align filter labels and selects */
+  align-items: center;
+  gap: 10px; /* Space between label and select */
+}
+
+.filters label {
+  font-weight: bold;
+}
+
+.bookList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Responsive grid */
+  gap: 20px; /* Space between book items */
+  margin-top: 20px;
+}
+
+.bookItem {
+  border: 1px solid #ddd; /* Simple border */
+  padding: 10px;
+  text-align: center;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+}
+
+.bookItem h3 {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-size: 1rem;
+}
+
+.bookItem p {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 2px 0;
+}
+
+/* Ensure image fits well */
+.bookImage {
+  max-width: 100%;
+  height: auto; /* Maintain aspect ratio */
+  display: block; /* Prevents extra space below image */
+  margin: 0 auto 10px; /* Center image and add space below */
+}

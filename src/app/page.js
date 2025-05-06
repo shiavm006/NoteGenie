@@ -114,6 +114,9 @@ export default function Home() {
     <div className={styles.container}>
       {/* Hero Section */}
       <section className={styles.hero}>
+        <div className={styles.heroImageBehind}>
+          <img src="/ai-notes-app.jpg" alt="AI Notes App" style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'inherit'}} />
+        </div>
         <div className={styles.heroContent}>
           <div className={styles.heroBadge}>AI-Powered Note Taking</div>
           <h1 className={styles.heroTitle}>Welcome to Note-Ginie!</h1>
@@ -138,9 +141,6 @@ export default function Home() {
               </div>
             ))}
           </div>
-        </div>
-        <div className={styles.heroImage}>
-          <div className={styles.imagePlaceholder}></div>
         </div>
       </section>
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import styles from "./Navbar.module.css"
 import AuthModal from "./AuthModal"
@@ -9,6 +9,16 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
   const [authMode, setAuthMode] = useState("login") // 'login' or 'signup'
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20)
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
@@ -25,13 +35,13 @@ export default function Navbar() {
   }
 
   return (
-    <header className={styles.header}>
+    <header className={`${styles.header} ${isScrolled ? styles.scrolled : ""}`}>
       <div className={styles.container}>
         <div className={styles.logo}>
           <Link href="/">
             <div className={styles.logoWrapper}>
-              <div className={styles.logoCircle}></div>
-              <span className={styles.logoText}>Textbook Companion App</span>
+              <img src="/logo.png" alt="Logo" className={styles.logoImage} /> 
+              <span className={styles.logoText}>NOTE-GENIE</span>
             </div>
           </Link>
         </div>
