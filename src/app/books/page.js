@@ -1,208 +1,269 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styles from './page.module.css';
 
-// Static fallback books for when no search is performed
-const fallbackBooks = [
-  {
-    id: 'fallback-1',
-    volumeInfo: {
-      title: 'To Kill a Mockingbird',
-      authors: ['Harper Lee'],
-      publisher: 'J.B. Lippincott & Co.',
-      description: 'A novel about racial injustice and moral growth in the American South.',
-      imageLinks: { thumbnail: 'https://covers.openlibrary.org/b/id/8228691-L.jpg' },
-      infoLink: 'https://openlibrary.org/works/OL82563W/To_Kill_a_Mockingbird',
-    },
-  },
-  {
-    id: 'fallback-2',
-    volumeInfo: {
-      title: '1984',
-      authors: ['George Orwell'],
-      publisher: 'Secker & Warburg',
-      description: 'A dystopian novel set in a totalitarian society ruled by Big Brother.',
-      imageLinks: { thumbnail: 'https://covers.openlibrary.org/b/id/7222246-L.jpg' },
-      infoLink: 'https://openlibrary.org/works/OL7343625W/1984',
-    },
-  },
-  {
-    id: 'fallback-3',
-    volumeInfo: {
-      title: 'Pride and Prejudice',
-      authors: ['Jane Austen'],
-      publisher: 'T. Egerton',
-      description: 'A classic novel of manners and marriage in early 19th-century England.',
-      imageLinks: { thumbnail: 'https://covers.openlibrary.org/b/id/8091016-L.jpg' },
-      infoLink: 'https://openlibrary.org/works/OL14992614W/Pride_and_Prejudice',
-    },
-  },
-  {
-    id: 'fallback-4',
-    volumeInfo: {
-      title: 'The Great Gatsby',
-      authors: ['F. Scott Fitzgerald'],
-      publisher: 'Charles Scribner\'s Sons',
-      description: 'A story of wealth, love, and tragedy in the Jazz Age.',
-      imageLinks: { thumbnail: 'https://covers.openlibrary.org/b/id/7222161-L.jpg' },
-      infoLink: 'https://openlibrary.org/works/OL2765017W/The_Great_Gatsby',
-    },
-  },
-  {
-    id: 'fallback-5',
-    volumeInfo: {
-      title: 'Moby-Dick',
-      authors: ['Herman Melville'],
-      publisher: 'Harper & Brothers',
-      description: 'The epic tale of Captain Ahab\'s obsessive quest to kill the white whale.',
-      imageLinks: { thumbnail: 'https://covers.openlibrary.org/b/id/8100921-L.jpg' },
-      infoLink: 'https://openlibrary.org/works/OL15626906W/Moby-Dick',
-    },
-  },
-  {
-    id: 'fallback-6',
-    volumeInfo: {
-      title: 'The Hobbit',
-      authors: ['J.R.R. Tolkien'],
-      publisher: 'George Allen & Unwin',
-      description: 'A fantasy adventure that precedes The Lord of the Rings.',
-      imageLinks: { thumbnail: 'https://covers.openlibrary.org/b/id/6979861-L.jpg' },
-      infoLink: 'https://openlibrary.org/works/OL262758W/The_Hobbit',
-    },
-  },
+const GOOGLE_BOOKS_API = 'https://www.googleapis.com/books/v1/volumes';
+const RANDOM_TOPICS = [
+  'science', 'history', 'technology', 'art', 'mathematics', 'fiction', 'adventure', 'education', 'nature', 'biography', 'mystery', 'fantasy', 'health', 'business', 'philosophy', 'psychology', 'travel', 'sports', 'music', 'engineering'
 ];
 
-export default function BooksPage() {
-  const [query, setQuery] = useState('');
-  const [books, setBooks] = useState(fallbackBooks);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const debounceRef = useRef();
+function getRandomTopic() {
+  return RANDOM_TOPICS[Math.floor(Math.random() * RANDOM_TOPICS.length)];
+}
 
-  // Fetch books from Google Books API
-  const fetchBooks = async (search) => {
-    if (!search) {
-      setBooks(fallbackBooks);
-      setError('');
-      return;
-    }
+function mapGoogleBookToBook(item) {
+  const volume = item.volumeInfo || {};
+  return {
+    id: item.id,
+    title: volume.title || 'Untitled',
+    author: (volume.authors && volume.authors.join(', ')) || 'Unknown',
+    genre: (volume.categories && volume.categories[0]) || 'General',
+    class: 'N/A', // Google Books does not provide class
+    subject: (volume.categories && volume.categories[0]) || 'General',
+    interests: volume.categories || [],
+    image: (volume.imageLinks && (volume.imageLinks.thumbnail || volume.imageLinks.smallThumbnail)) || '/placeholder.jpg',
+    rating: volume.averageRating || 0,
+    year: (volume.publishedDate && volume.publishedDate.slice(0, 4)) || 'N/A',
+    description: volume.description || 'No description available.',
+    difficulty: 'N/A', // Not available from Google Books
+    pages: volume.pageCount || 'N/A',
+    previewLink: volume.previewLink || item.selfLink || '',
+  };
+}
+
+export default function Page() {
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [randomTopic, setRandomTopic] = useState(getRandomTopic());
+  const [selectedClass, setSelectedClass] = useState('all');
+  const [selectedSubject, setSelectedSubject] = useState('all');
+  const [selectedInterests, setSelectedInterests] = useState([]);
+  const [selectedDifficulty, setSelectedDifficulty] = useState('all');
+  const [sortBy, setSortBy] = useState('title');
+  const [showDescription, setShowDescription] = useState(null);
+
+  useEffect(() => {
     setLoading(true);
-    setError('');
-    try {
-      const res = await fetch(
-        `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(search)}&maxResults=20`
-      );
-      const data = await res.json();
-      if (data.items) {
-        setBooks(data.items);
-      } else {
-        setBooks([]);
-        setError('No books found.');
-      }
-    } catch (err) {
-      setError('Failed to fetch books. Please try again.');
-      setBooks([]);
-    } finally {
-      setLoading(false);
+    setError(null);
+    let query = searchQuery.trim() === '' ? randomTopic : searchQuery;
+    fetch(`${GOOGLE_BOOKS_API}?q=${encodeURIComponent(query)}&maxResults=20`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.items) {
+          setBooks(data.items.map(mapGoogleBookToBook));
+        } else {
+          setBooks([]);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        setError('Failed to fetch books.');
+        setLoading(false);
+      });
+  }, [searchQuery, randomTopic]);
+
+  // When the search bar is cleared, pick a new random topic
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      setRandomTopic(getRandomTopic());
     }
+  }, [searchQuery]);
+
+  // Extract unique values for filters from fetched books
+  const classes = useMemo(() => [...new Set(books.map(book => book.class))].filter(Boolean).sort(), [books]);
+  const subjects = useMemo(() => [...new Set(books.map(book => book.subject))].filter(Boolean).sort(), [books]);
+  const interests = useMemo(() => [...new Set(books.flatMap(book => book.interests))].filter(Boolean).sort(), [books]);
+  const difficulties = ['Beginner', 'Intermediate', 'Advanced', 'N/A'];
+
+  const filteredBooks = useMemo(() => {
+    return books
+      .filter(book => {
+        const matchesSearch = book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            book.description.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesClass = selectedClass === 'all' || book.class === selectedClass;
+        const matchesSubject = selectedSubject === 'all' || book.subject === selectedSubject;
+        const matchesInterests = selectedInterests.length === 0 || 
+                               selectedInterests.some(interest => book.interests.includes(interest));
+        const matchesDifficulty = selectedDifficulty === 'all' || book.difficulty === selectedDifficulty;
+        return matchesSearch && matchesClass && matchesSubject && matchesInterests && matchesDifficulty;
+      })
+      .sort((a, b) => {
+        switch (sortBy) {
+          case 'title':
+            return a.title.localeCompare(b.title);
+          case 'year':
+            return b.year > b.year ? -1 : 1;
+          case 'rating':
+            return b.rating - a.rating;
+          case 'pages':
+            return b.pages - a.pages;
+          default:
+            return 0;
+        }
+      });
+  }, [books, searchQuery, selectedClass, selectedSubject, selectedInterests, selectedDifficulty, sortBy]);
+
+  const handleInterestToggle = (interest) => {
+    setSelectedInterests(prev => 
+      prev.includes(interest)
+        ? prev.filter(i => i !== interest)
+        : [...prev, interest]
+    );
   };
 
-  // Debounce search
-  useEffect(() => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    if (!query) {
-      setBooks(fallbackBooks);
-      setError('');
-      return;
-    }
-    debounceRef.current = setTimeout(() => {
-      fetchBooks(query);
-    }, 600);
-    return () => clearTimeout(debounceRef.current);
-  }, [query]);
-
   return (
-    <div className={styles.container}>
-      <h1 style={{
-        fontSize: '2.2rem',
-        fontWeight: 700,
-        background: 'linear-gradient(135deg, #673AB7, #9C27B0)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        backgroundClip: 'text',
-        marginBottom: '2rem',
-        letterSpacing: '-0.5px'
-      }}>Book Explorer</h1>
-      <div className={styles.filters} style={{marginBottom: 32, justifyContent: 'center'}}>
-        <input
-          className={styles.searchInput}
-          style={{
-            width: 320,
-            maxWidth: '100%',
-            padding: '0.85rem 1.2rem',
-            borderRadius: 12,
-            border: '1.5px solid #673AB7',
-            fontSize: '1.1rem',
-            background: 'rgba(255,255,255,0.9)',
-            color: '#673AB7',
-            boxShadow: '0 1px 4px rgba(103, 58, 183, 0.05)',
-            outline: 'none',
-            marginRight: 12
-          }}
-          type="text"
-          placeholder="Search for books by title, author, or keyword..."
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-        />
+    <main className={styles.container}>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Book Collection</h1>
+        <p className={styles.subtitle}>Discover and explore books from Google Books API</p>
       </div>
-      {loading && (
-        <div style={{textAlign: 'center', margin: '2rem 0'}}>
-          <div className={styles.skeleton} style={{height: 40, width: 200, margin: '0 auto 1rem auto'}} />
-          <div className={styles.skeleton} style={{height: 180, width: '100%', maxWidth: 400, margin: '0 auto'}} />
+
+      <div className={styles.filters}>
+        <div className={styles.searchContainer}>
+          <input
+            type="text"
+            placeholder="Search books, authors, or descriptions..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className={styles.searchInput}
+          />
         </div>
-      )}
-      {error && !loading && (
-        <div style={{textAlign: 'center', color: '#c62828', margin: '2rem 0', fontWeight: 500}}>{error}</div>
-      )}
-      <div className={styles.bookList} style={{marginTop: 0}}>
-        {books.map((book) => {
-          const info = book.volumeInfo;
-          return (
-            <div key={book.id} className={styles.bookItem} style={{minHeight: 340}}>
-              <div className={styles.bookImagePlaceholder} style={{height: 180, marginBottom: 16, background: 'linear-gradient(135deg, #e0e7ff, #ede7f6)'}}>
-                {info.imageLinks && info.imageLinks.thumbnail ? (
-                  <img
-                    src={info.imageLinks.thumbnail}
-                    alt={info.title}
-                    style={{maxHeight: 160, maxWidth: '100%', borderRadius: 8, boxShadow: '0 2px 8px rgba(103, 58, 183, 0.08)'}}
-                  />
-                ) : (
-                  <span style={{color: '#b39ddb', fontSize: '2.2rem'}}>📚</span>
+
+        <div className={styles.filterGroup}>
+          <select
+            value={selectedClass}
+            onChange={(e) => setSelectedClass(e.target.value)}
+            className={styles.filterSelect}
+          >
+            <option value="all">All Classes</option>
+            {classes.map(cls => (
+              <option key={cls} value={cls}>{cls}</option>
+            ))}
+          </select>
+
+          <select
+            value={selectedSubject}
+            onChange={(e) => setSelectedSubject(e.target.value)}
+            className={styles.filterSelect}
+          >
+            <option value="all">All Subjects</option>
+            {subjects.map(subject => (
+              <option key={subject} value={subject}>{subject}</option>
+            ))}
+          </select>
+
+          <select
+            value={selectedDifficulty}
+            onChange={(e) => setSelectedDifficulty(e.target.value)}
+            className={styles.filterSelect}
+          >
+            <option value="all">All Difficulties</option>
+            {difficulties.map(difficulty => (
+              <option key={difficulty} value={difficulty}>{difficulty}</option>
+            ))}
+          </select>
+
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className={styles.filterSelect}
+          >
+            <option value="title">Sort by Title</option>
+            <option value="year">Sort by Year</option>
+            <option value="rating">Sort by Rating</option>
+            <option value="pages">Sort by Pages</option>
+          </select>
+        </div>
+      </div>
+
+      <div className={styles.interestsFilter}>
+        <h3>Filter by Interests</h3>
+        <div className={styles.interestsList}>
+          {interests.map(interest => (
+            <button
+              key={interest}
+              onClick={() => handleInterestToggle(interest)}
+              className={`${styles.interestTag} ${selectedInterests.includes(interest) ? styles.interestTagActive : ''}`}
+            >
+              {interest}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {loading ? (
+        <div className={styles.noResults}><p>Loading books...</p></div>
+      ) : error ? (
+        <div className={styles.noResults}><p>{error}</p></div>
+      ) : filteredBooks.length === 0 ? (
+        <div className={styles.noResults}><p>No books found matching your criteria</p></div>
+      ) : (
+        <div className={styles.bookList}>
+          {filteredBooks.map((book) => (
+            <div key={book.id} className={styles.bookItem + ' ' + styles.bookItemImproved}>
+              <div className={styles.bookImageContainer}>
+                <img
+                  src={book.image}
+                  alt={book.title}
+                  className={styles.bookImage}
+                />
+                <div className={styles.bookOverlay}>
+                  {book.previewLink && (
+                    <a
+                      href={book.previewLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.previewButton}
+                    >
+                      Preview
+                    </a>
+                  )}
+                </div>
+              </div>
+              <div className={styles.bookInfo}>
+                <h3 className={styles.bookTitle}>{book.title}</h3>
+                <p className={styles.author}>By: {book.author}</p>
+                <div className={styles.bookMeta}>
+                  <span className={styles.bookTag}>{book.genre}</span>
+                  <span className={styles.bookClass}>{book.class}</span>
+                  <span className={styles.bookSubject}>{book.subject}</span>
+                  <span className={styles.bookDifficulty}>{book.difficulty}</span>
+                </div>
+                <div className={styles.interests}>
+                  {book.interests.map(interest => (
+                    <span key={interest} className={styles.interestChip}>{interest}</span>
+                  ))}
+                </div>
+                <div className={styles.bookDetails}>
+                  <span className={styles.bookPages}>{book.pages} pages</span>
+                  <span className={styles.bookYear}>{book.year}</span>
+                </div>
+                <div className={styles.rating}>
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i} className={i < Math.floor(book.rating) ? styles.starFilled : styles.starEmpty}>
+                      ★
+                    </span>
+                  ))}
+                  <span className={styles.ratingValue}>{book.rating}</span>
+                </div>
+                <button 
+                  className={styles.descriptionButton}
+                  onClick={() => setShowDescription(showDescription === book.id ? null : book.id)}
+                >
+                  {showDescription === book.id ? 'Hide Description' : 'Show Description'}
+                </button>
+                {showDescription === book.id && (
+                  <p className={styles.description}>{book.description}</p>
                 )}
               </div>
-              <h3 style={{fontWeight: 700, fontSize: '1.1rem', color: '#1e293b', marginBottom: 6, letterSpacing: '-0.3px'}}>{info.title}</h3>
-              <p style={{fontSize: '0.98rem', color: '#666', margin: 0}}>{info.authors ? `By: ${info.authors.join(", ")}` : ""}</p>
-              <p style={{fontSize: '0.95rem', color: '#9C27B0', margin: 0, fontWeight: 500}}>{info.publisher ? info.publisher : ""}</p>
-              <p style={{fontSize: '0.92rem', color: '#555', margin: '6px 0 0 0', minHeight: 36}}>{info.description ? info.description.slice(0, 80) + (info.description.length > 80 ? '...' : '') : ''}</p>
-              <a
-                href={info.infoLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.btnPrimary}
-                style={{marginTop: 12, fontSize: '0.98rem', padding: '0.6rem 1.2rem', borderRadius: 8, display: 'inline-block'}}
-              >
-                View Book
-              </a>
             </div>
-          );
-        })}
-      </div>
-      {!loading && !error && books.length === 0 && query && (
-        <div style={{textAlign: 'center', color: '#888', margin: '2rem 0', fontWeight: 500}}>
-          No books found for "{query}".
+          ))}
         </div>
       )}
-    </div>
+    </main>
   );
-}
+} 
