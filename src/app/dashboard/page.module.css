@@ -1,218 +1,158 @@
 .container {
-    width: 100%;
-  }
-  
-  .loginPrompt {
-    text-align: center;
-    padding: 3rem;
-    max-width: 500px;
-    margin: 0 auto;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .loginButton {
-    padding: 0.75rem 1.5rem;
-    background-color: #000;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 1.5rem;
-  }
-  
-  .loginButton:hover {
-    background-color: #333;
-  }
-  
-  .dashboardHeader {
-    margin-bottom: 2rem;
-  }
-  
-  .welcomeBanner {
-    background-color: #f5f5f5;
-    padding: 2rem;
-    border-radius: 8px;
-    margin-bottom: 2rem;
-  }
-  
-  .bannerContent {
-    text-align: center;
-  }
-  
-  .bannerContent h1 {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  .bannerContent p {
-    color: #666;
-  }
-  
-  .dashboardContent {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-  
-  .section {
-    margin-bottom: 2rem;
-  }
-  
-  .sectionTitle {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-    text-align: center;
-    position: relative;
-  }
-  
-  .sectionTitle::after {
-    content: "";
-    display: block;
-    width: 50px;
-    height: 3px;
-    background-color: #e83e8c;
-    margin: 0.5rem auto 0;
-  }
-  
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #333;
+  line-height: 1.6;
+}
+
+.loginPrompt {
+  text-align: center;
+  padding: 50px 30px;
+  max-width: 500px;
+  margin: 40px auto;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(103, 58, 183, 0.15);
+  background-color: white;
+  border: 1px solid rgba(103, 58, 183, 0.1);
+}
+
+.loginButton {
+  padding: 14px 28px;
+  background: linear-gradient(135deg, #673AB7, #9C27B0);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 25px;
+  box-shadow: 0 4px 10px rgba(103, 58, 183, 0.2);
+  letter-spacing: 0.3px;
+}
+
+.loginButton:hover {
+  background: linear-gradient(135deg, #5E35B1, #8E24AA);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(103, 58, 183, 0.3);
+}
+
+.dashboardHeader {
+  margin-bottom: 40px;
+}
+
+.welcomeBanner {
+  background: linear-gradient(135deg, rgba(103, 58, 183, 0.05), rgba(156, 39, 176, 0.05));
+  padding: 40px 30px;
+  border-radius: 16px;
+  margin-bottom: 40px;
+  border: 1px solid rgba(103, 58, 183, 0.1);
+  box-shadow: 0 5px 15px rgba(103, 58, 183, 0.05);
+}
+
+.bannerContent {
+  text-align: center;
+}
+
+.bannerContent h1 {
+  font-size: 2.2rem;
+  margin-bottom: 15px;
+  background: linear-gradient(135deg, #673AB7, #9C27B0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+}
+
+.bannerContent p {
+  color: #555;
+  font-size: 1.1rem;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.dashboardContent {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+}
+
+.section {
+  margin-bottom: 40px;
+}
+
+.sectionTitle {
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+  text-align: center;
+  position: relative;
+  display: inline-block;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: 600;
+}
+
+.sectionTitle::after {
+  content: "";
+  display: block;
+  width: 50px;
+  height: 3px;
+  background: linear-gradient(90deg, #673AB7, #9C27B0);
+  margin: 10px auto 0;
+  border-radius: 2px;
+}
+
+.booksGrid,
+.notesGrid,
+.quizzesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+.bookCard,
+.noteCard,
+.quizCard {
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+  position: relative;
+  border: 1px solid rgba(103, 58, 183, 0.08);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.bookCard:hover,
+.noteCard:hover,
+.quizCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(103, 58, 183, 0.1);
+}
+
+@media (max-width: 768px) {
   .booksGrid,
   .notesGrid,
   .quizzesGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   }
   
-  .bookCard,
-  .noteCard,
-  .quizCard {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
+  .bannerContent h1 {
+    font-size: 1.8rem;
   }
-  
-  .bookCard:hover,
-  .noteCard:hover,
-  .quizCard:hover {
-    transform: translateY(-5px);
+}
+
+@media (max-width: 480px) {
+  .booksGrid,
+  .notesGrid,
+  .quizzesGrid {
+    grid-template-columns: 1fr;
   }
-  
-  .bookIcon,
-  .noteIcon,
-  .quizIcon {
-    font-size: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background-color: #f5f5f5;
-    border-radius: 50%;
-  }
-  
-  .bookInfo,
-  .noteInfo,
-  .quizInfo {
-    flex: 1;
-  }
-  
-  .bookTitle,
-  .noteTitle,
-  .quizTitle {
-    font-size: 1.1rem;
-    margin-bottom: 0.25rem;
-  }
-  
-  .bookAuthor,
-  .noteBook,
-  .quizScore {
-    color: #666;
-    font-size: 0.9rem;
-  }
-  
-  .userSection {
-    margin-top: 2rem;
-  }
-  
-  .userCard {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .userAvatar {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background-color: #f5f5f5;
-    margin-bottom: 1rem;
-  }
-  
-  .userName {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  .userBio {
-    color: #666;
-    text-align: center;
-    margin-bottom: 1.5rem;
-  }
-  
-  .userActions {
-    display: flex;
-    gap: 1rem;
-  }
-  
-  .logoutButton,
-  .editProfileButton {
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  
-  .logoutButton {
-    background-color: white;
-    color: #000;
-    border: 1px solid #000;
-  }
-  
-  .logoutButton:hover {
-    background-color: #f5f5f5;
-  }
-  
-  .editProfileButton {
-    background-color: #000;
-    color: white;
-    border: 1px solid #000;
-  }
-  
-  .editProfileButton:hover {
-    background-color: #333;
-  }
-  
-  @media (max-width: 768px) {
-    .booksGrid,
-    .notesGrid,
-    .quizzesGrid {
-      grid-template-columns: 1fr;
-    }
-  
-    .userActions {
-      flex-direction: column;
-    }
-  }
+}
   

@@ -1,109 +1,49 @@
-import Link from "next/link"
-import styles from "./page.module.css"
+import styles from './page.module.css';
 
 export default function QuizzesPage() {
-  // Sample data for quizzes
+  // Sample quiz data
   const quizzes = [
-    {
-      id: 1,
-      title: "Physics Quiz",
-      subject: "Physics",
-      difficulty: "Easy",
-      questions: 10,
-    },
-    {
-      id: 2,
-      title: "Math Quiz",
-      subject: "Math",
-      difficulty: "Hard",
-      questions: 15,
-    },
-    {
-      id: 3,
-      title: "Biology Quiz",
-      subject: "Biology",
-      difficulty: "Easy",
-      questions: 8,
-    },
-  ]
+    { id: 1, title: 'Literature Basics', questions: 10, difficulty: 'Easy', category: 'Literature' },
+    { id: 2, title: 'Advanced Mathematics', questions: 15, difficulty: 'Hard', category: 'Mathematics' },
+    { id: 3, title: 'World History', questions: 12, difficulty: 'Medium', category: 'History' },
+    { id: 4, title: 'Science Fundamentals', questions: 8, difficulty: 'Easy', category: 'Science' },
+    { id: 5, title: 'Geography Challenge', questions: 20, difficulty: 'Medium', category: 'Geography' },
+    { id: 6, title: 'Computer Science Basics', questions: 15, difficulty: 'Medium', category: 'Computer Science' },
+  ];
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>Quizzes</h1>
-        <p className={styles.subtitle}>Test your knowledge with subject/topic-based quizzes.</p>
+      <header className={styles.header}>
+        <h1 className={styles.title}>INTERACTIVE QUIZZES</h1>
+        <p className={styles.subtitle}>Test your knowledge with our collection of quizzes across various subjects</p>
+      </header>
 
-        <div className={styles.filterContainer}>
-          <button className={styles.clearButton}>Clear Filters</button>
-          <button className={styles.filterButton}>Filter</button>
-        </div>
+      <div className={styles.filterContainer}>
+        <button className={styles.filterButton}>Filter Quizzes</button>
+        <button className={styles.clearButton}>Clear Filters</button>
       </div>
 
-      <div className={styles.quizCollection}>
-        <h2 className={styles.sectionTitle}>Quiz Collection</h2>
-        <p className={styles.sectionDescription}>Explore available quizzes below.</p>
-
-        <div className={styles.quizActions}>
-          <button className={styles.bookmarkButton}>Bookmark Quiz</button>
-          <button className={styles.startButton}>Start Quiz</button>
-        </div>
-
+      <section className={styles.quizCollection}>
+        <h2 className={styles.sectionTitle}>Available Quizzes</h2>
+        <p className={styles.sectionDescription}>Browse through our collection of quizzes</p>
+        
         <div className={styles.quizGrid}>
-          {quizzes.map((quiz) => (
+          {quizzes.map(quiz => (
             <div key={quiz.id} className={styles.quizCard}>
-              <div className={styles.quizImage}>
-                <div className={styles.imagePlaceholder}></div>
+              <div className={styles.quizHeader}>
+                <span className={styles.quizCategory}>{quiz.category}</span>
+                <span className={styles.quizDifficulty}>{quiz.difficulty}</span>
               </div>
-              <div className={styles.quizInfo}>
-                <h3 className={styles.quizTitle}>{quiz.title}</h3>
-                <p className={styles.quizSubject}>Subject: {quiz.subject}</p>
-                <p className={styles.quizDifficulty}>Difficulty: {quiz.difficulty}</p>
-                <p className={styles.quizQuestions}>Questions: {quiz.questions}</p>
-                <Link href={`/quizzes/${quiz.id}`} className={styles.startQuizButton}>
-                  Start Quiz
-                </Link>
+              <h3 className={styles.quizTitle}>{quiz.title}</h3>
+              <p className={styles.quizDetails}>{quiz.questions} Questions</p>
+              <div className={styles.quizActions}>
+                <button className={styles.startButton}>Start Quiz</button>
+                <button className={styles.bookmarkButton}>Save</button>
               </div>
             </div>
           ))}
         </div>
-      </div>
-
-      <div className={styles.quizDemo}>
-        <h2 className={styles.sectionTitle}>Quiz Results</h2>
-        <p className={styles.sectionDescription}>Review your quiz performance and check the correct answers.</p>
-
-        <div className={styles.resultsContainer}>
-          <div className={styles.scoreSection}>
-            <h3 className={styles.scoreTitle}>Your Score</h3>
-            <div className={styles.scoreValue}>7/10</div>
-          </div>
-
-          <div className={styles.answersSection}>
-            <h3 className={styles.answersTitle}>Correct Answers</h3>
-            <div className={styles.answersGrid}>
-              <div className={styles.answerItem}>Q1: A</div>
-              <div className={styles.answerItem}>Q2: C</div>
-              <div className={styles.answerItem}>Q3: B</div>
-            </div>
-          </div>
-
-          <div className={styles.actionButtons}>
-            <button className={styles.retryButton}>Retry Quiz</button>
-            <button className={styles.submitButton}>Submit</button>
-          </div>
-        </div>
-      </div>
-
-      <div className={styles.actionsSection}>
-        <h2 className={styles.sectionTitle}>Actions</h2>
-        <div className={styles.actionCard}>
-          <div className={styles.actionIcon}>📝</div>
-          <div className={styles.actionContent}>
-            <h3 className={styles.actionTitle}>Take Quiz</h3>
-            <p className={styles.actionDescription}>Start a new quiz to test your knowledge.</p>
-          </div>
-        </div>
-      </div>
+      </section>
     </div>
-  )
+  );
 }

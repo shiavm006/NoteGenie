@@ -7,7 +7,7 @@ export default function Footer() {
   return (
     <footer className={styles.footer}>
       <div className={styles.container}>
-        <div className={styles.copyright}>&copy; {currentYear} Textbook Companion App. All rights reserved.</div>
+        <div className={styles.copyright}>&copy; {currentYear} NOTE-GINIE. All rights reserved.</div>
         <div className={styles.links}>
           <Link href="/privacy-policy" className={styles.link}>
             Privacy Policy

@@ -228,7 +228,7 @@ export default function Home() {
                   <img src={testimonial.image} alt={testimonial.name} />
                 </div>
                 <div className={styles.testimonialInfo}>
-                  <div className={styles.testimonialName}>{testimonial.name}</div>
+                <div className={styles.testimonialName}>{testimonial.name}</div>
                   <div className={styles.testimonialRole}>{testimonial.role}</div>
                   <div className={styles.testimonialUniversity}>{testimonial.university}</div>
                 </div>

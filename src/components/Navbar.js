@@ -10,6 +10,7 @@ export default function Navbar() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
   const [authMode, setAuthMode] = useState("login") // 'login' or 'signup'
   const [isScrolled, setIsScrolled] = useState(false)
+  const [logoError, setLogoError] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,8 +41,17 @@ export default function Navbar() {
         <div className={styles.logo}>
           <Link href="/">
             <div className={styles.logoWrapper}>
-              <img src="/logo.png" alt="Logo" className={styles.logoImage} /> 
-              <span className={styles.logoText}>NOTE-GENIE</span>
+              {!logoError ? (
+                <img 
+                  src="/logo.png" 
+                  alt="Logo" 
+                  className={styles.logoImage} 
+                  onError={() => setLogoError(true)}
+                />
+              ) : (
+                <div className={styles.logoCircle}>NG</div>
+              )}
+              <span className={styles.logoText}>NOTE-GINIE</span>
             </div>
           </Link>
         </div>

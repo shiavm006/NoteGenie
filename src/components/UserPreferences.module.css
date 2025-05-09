@@ -1,0 +1,61 @@
+.preferencesPanel {
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--primary-border);
+}
+
+.preferencesPanel h3 {
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}
+
+.optionGroup {
+  margin-bottom: 20px;
+}
+
+.optionGroup label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.colorOptions {
+  display: flex;
+  gap: 10px;
+}
+
+.colorOption {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.colorOption.selected {
+  border-color: var(--text-primary);
+  transform: scale(1.1);
+}
+
+.fontSizeOptions {
+  display: flex;
+  gap: 10px;
+}
+
+.fontSizeOption {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--primary-border);
+  background-color: var(--bg-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.fontSizeOption.selected {
+  background-color: var(--primary-color);
+  color: white;
+}

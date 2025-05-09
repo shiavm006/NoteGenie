@@ -20,86 +20,44 @@ const allBooks = [
   { id: 12, title: 'Organic Chemistry', subject: 'Science', class: '12', imageUrl: 'https://via.placeholder.com/100x150.png?text=Org+Chem' },
 ];
 
+import styles from './page.module.css';
+
 export default function BooksPage() {
-  const [selectedClass, setSelectedClass] = useState('all');
-  const [selectedSubject, setSelectedSubject] = useState('all');
-  const [filteredBooks, setFilteredBooks] = useState(allBooks);
-  const [availableClasses, setAvailableClasses] = useState([]);
-  const [availableSubjects, setAvailableSubjects] = useState([]);
-
-  // Get unique classes and subjects
-  useEffect(() => {
-    const classes = ['all', ...new Set(allBooks.map(book => book.class))];
-    const subjects = ['all', ...new Set(allBooks.map(book => book.subject))];
-    setAvailableClasses(classes.sort((a, b) => (a === 'all' ? -1 : b === 'all' ? 1 : parseInt(a) - parseInt(b))));
-    setAvailableSubjects(subjects.sort((a, b) => (a === 'all' ? -1 : b === 'all' ? 1 : a.localeCompare(b))));
-  }, []);
-
-  // Filter books
-  useEffect(() => {
-    let books = allBooks;
-    if (selectedClass !== 'all') {
-      books = books.filter(book => book.class === selectedClass);
-    }
-    if (selectedSubject !== 'all') {
-      books = books.filter(book => book.subject === selectedSubject);
-    }
-    setFilteredBooks(books);
-  }, [selectedClass, selectedSubject]);
+  // Sample book data
+  const books = [
+    { id: 1, title: 'The Great Gatsby', author: 'F. Scott Fitzgerald', genre: 'Classic', image: '/placeholder.jpg' },
+    { id: 2, title: 'To Kill a Mockingbird', author: 'Harper Lee', genre: 'Fiction', image: '/placeholder.jpg' },
+    { id: 3, title: 'Pride and Prejudice', author: 'Jane Austen', genre: 'Romance', image: '/placeholder.jpg' },
+    { id: 4, title: '1984', author: 'George Orwell', genre: 'Dystopian', image: '/placeholder.jpg' },
+    { id: 5, title: 'The Hobbit', author: 'J.R.R. Tolkien', genre: 'Fantasy', image: '/placeholder.jpg' },
+    { id: 6, title: 'Harry Potter', author: 'J.K. Rowling', genre: 'Fantasy', image: '/placeholder.jpg' },
+  ];
 
   return (
-    <div className={styles.container || ''}>
-      <h1>Books Section</h1>
-
-      {/* Filters */}
-      <div className={styles.filters || ''}>
-        <label htmlFor="class-select">Filter by Class: </label>
-        <select
-          id="class-select"
-          value={selectedClass}
-          onChange={(e) => setSelectedClass(e.target.value)}
-        >
-          {availableClasses.map(cls => (
-            <option key={cls} value={cls}>
-              {cls === 'all' ? 'All Classes' : `Class ${cls}`}
-            </option>
-          ))}
-        </select>
-
-        <label htmlFor="subject-select" style={{ marginLeft: '20px' }}>Filter by Subject: </label>
-        <select
-          id="subject-select"
-          value={selectedSubject}
-          onChange={(e) => setSelectedSubject(e.target.value)}
-        >
-          {availableSubjects.map(sub => (
-            <option key={sub} value={sub}>{sub === 'all' ? 'All Subjects' : sub}</option>
-          ))}
+    <div className={styles.container}>
+      <h1>Book Collection</h1>
+      
+      <div className={styles.filters}>
+        <label htmlFor="genre">Filter by Genre:</label>
+        <select id="genre" name="genre">
+          <option value="">All Genres</option>
+          <option value="Classic">Classic</option>
+          <option value="Fiction">Fiction</option>
+          <option value="Romance">Romance</option>
+          <option value="Dystopian">Dystopian</option>
+          <option value="Fantasy">Fantasy</option>
         </select>
       </div>
-
-      {/* Book List */}
-      <h2>Available Books</h2>
-      <div className={styles.bookList || ''}> {/* Apply grid/flex styles here */}
-        {filteredBooks.length > 0 ? (
-          filteredBooks.map(book => (
-            <div key={book.id} className={styles.bookItem || ''}> {/* Individual book item */}
-              <Image
-                src={book.imageUrl} 
-                alt={`Cover for ${book.title}`} 
-                width={100} // Specify width
-                height={150} // Specify height
-                className={styles.bookImage || ''} // Optional: for specific image styling
-                priority={false} // Set to true for images above the fold
-              />
-              <h3>{book.title}</h3>
-              <p>Class: {book.class}</p>
-              <p>Subject: {book.subject}</p>
-            </div>
-          ))
-        ) : (
-          <p>No books match the selected filters.</p>
-        )}
+      
+      <div className={styles.bookList}>
+        {books.map(book => (
+          <div key={book.id} className={styles.bookItem}>
+            <div className={styles.bookImagePlaceholder} style={{ backgroundColor: '#f0f0f0', height: '150px', width: '100%' }}></div>
+            <h3>{book.title}</h3>
+            <p>By: {book.author}</p>
+            <p>Genre: {book.genre}</p>
+          </div>
+        ))}
       </div>
     </div>
   );
