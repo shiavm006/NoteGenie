@@ -1,305 +1,293 @@
 .header {
-    background: rgba(255, 255, 255, 0.95);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 20px rgba(103, 58, 183, 0.15);
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    z-index: 1200;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border-bottom: 1px solid rgba(103, 58, 183, 0.1);
-  }
-  
-  .container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  .logoImage {
-    height: 40px;
-    width: auto;
-    margin-right: 10px;
-    transition: transform 0.3s ease;
-  }
-  
-  .logoImage:hover {
-    transform: scale(1.05);
-  }
-  
-  .logo {
-    display: flex;
-    align-items: center;
-  }
-  
-  .logoWrapper {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    transition: transform 0.3s ease;
-  }
-  
-  .logoWrapper:hover {
-    transform: translateX(5px);
-  }
-  
-  .logoCircle {
-    width: 35px;
-    height: 35px;
-    background: linear-gradient(135deg, #673AB7, #9C27B0);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 600;
-    font-size: 1.1rem;
-    box-shadow: 0 2px 8px rgba(103, 58, 183, 0.2);
-  }
-  
-  .logoText {
-    font-weight: 700;
-    font-size: 1.2rem;
-    background: linear-gradient(135deg, #673AB7, #9C27B0);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    letter-spacing: -0.5px;
-  }
-  
-  .nav {
-    display: flex;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1200;
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(103, 58, 183, 0.15);
+  border-bottom: 1px solid var(--glass-border);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scrolled {
+  box-shadow: 0 8px 32px 0 rgba(103, 58, 183, 0.18);
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logoWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--primary-color);
+}
+
+.logoImage {
+  height: 40px;
+  width: auto;
+}
+
+.logoCircle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+}
+
+.logoText {
+  font-family: var(--font-heading);
+  letter-spacing: -0.025em;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+}
+
+.navList {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+}
+
+.navItem {
+  position: relative;
+}
+
+.navLink {
+  font-weight: 500;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.navLink:hover {
+  color: var(--primary-color);
+}
+
+.navLink::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary-gradient);
+  transition: width 0.3s ease;
+}
+
+.navLink:hover::after {
+  width: 100%;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.searchContainer {
+  position: relative;
+  width: 250px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.6rem 1rem 0.6rem 2.5rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border-color);
+  background-color: var(--background-color);
+  transition: all 0.3s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+  width: 300px;
+}
+
+.searchButton {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--gray-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.authButtons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.loginButton {
+  padding: 0.6rem 1.25rem;
+  border-radius: 9999px;
+  font-weight: 500;
+  background: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  transition: all 0.3s ease;
+}
+
+.loginButton:hover {
+  background-color: rgba(79, 70, 229, 0.1);
+}
+
+.signupButton {
+  padding: 0.6rem 1.25rem;
+  border-radius: 9999px;
+  font-weight: 500;
+  background: var(--primary-gradient);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.25);
+}
+
+.signupButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(79, 70, 229, 0.3);
+}
+
+.menuButton {
+  display: none;
+  background: none;
+  border: none;
+  width: 40px;
+  height: 40px;
+  position: relative;
+  cursor: pointer;
+}
+
+.menuIcon,
+.menuIcon::before,
+.menuIcon::after {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background-color: var(--text-color);
+  position: absolute;
+  transition: all 0.3s ease;
+}
+
+.menuIcon {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.menuIcon::before,
+.menuIcon::after {
+  content: '';
+  left: 0;
+}
+
+.menuIcon::before {
+  top: -8px;
+}
+
+.menuIcon::after {
+  bottom: -8px;
+}
+
+@media (max-width: 1024px) {
   .navList {
-    display: flex;
-    list-style: none;
-    gap: 2rem;
-  }
-  
-  .navLink {
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: #333;
-    text-decoration: none;
-    padding: 0.5rem 0;
-    position: relative;
-    transition: all 0.3s ease;
-  }
-  
-  .navLink::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: linear-gradient(135deg, #673AB7, #9C27B0);
-    transition: width 0.3s ease;
-  }
-  
-  .navLink:hover {
-    color: #673AB7;
-  }
-  
-  .navLink:hover::after {
-    width: 100%;
-  }
-  
-  .actions {
-    display: flex;
-    align-items: center;
     gap: 1.5rem;
   }
   
   .searchContainer {
-    position: relative;
-    display: flex;
-    align-items: center;
+    width: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
   }
   
-  .searchInput {
-    padding: 0.75rem 1rem;
-    padding-right: 2.5rem;
-    border: 1.5px solid rgba(103, 58, 183, 0.1);
-    border-radius: 8px;
-    font-size: 0.95rem;
-    width: 220px;
-    transition: all 0.3s ease;
-    background: rgba(255, 255, 255, 0.9);
-  }
-  
-  .searchInput:focus {
-    outline: none;
-    border-color: #673AB7;
-    box-shadow: 0 0 0 3px rgba(103, 58, 183, 0.1);
-    width: 240px;
-  }
-  
-  .searchButton {
-    position: absolute;
-    right: 0.75rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #673AB7;
+  .nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 250px;
+    background-color: var(--background-color);
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    transform: translateX(100%);
     transition: transform 0.3s ease;
+    z-index: 1001;
+    padding: 5rem 1.5rem 1.5rem;
   }
   
-  .searchButton:hover {
-    transform: scale(1.1);
+  .nav.active {
+    transform: translateX(0);
+  }
+  
+  .navList {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .menuButton {
+    display: block;
+    z-index: 1002;
+  }
+  
+  .active .menuIcon {
+    background-color: transparent;
+  }
+  
+  .active .menuIcon::before {
+    top: 0;
+    transform: rotate(45deg);
+  }
+  
+  .active .menuIcon::after {
+    bottom: 0;
+    transform: rotate(-45deg);
+  }
+  
+  .searchContainer {
+    display: none;
   }
   
   .authButtons {
-    display: flex;
-    gap: 0.75rem;
+    flex-direction: column;
+    width: 100%;
   }
   
   .loginButton,
   .signupButton {
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    letter-spacing: 0.3px;
-  }
-  
-  .loginButton {
-    background-color: transparent;
-    border: 1.5px solid #673AB7;
-    color: #673AB7;
-  }
-  
-  .signupButton {
-    background: linear-gradient(135deg, #673AB7, #9C27B0);
-    border: none;
-    color: white;
-    box-shadow: 0 2px 8px rgba(103, 58, 183, 0.2);
-  }
-  
-  .loginButton:hover {
-    background-color: rgba(103, 58, 183, 0.05);
-    transform: translateY(-2px);
-  }
-  
-  .signupButton:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(103, 58, 183, 0.3);
-  }
-  
-  .menuButton {
-    display: none;
-    background: none;
-    border: none;
-    cursor: pointer;
-    width: 32px;
-    height: 32px;
-    position: relative;
-    padding: 0;
-  }
-  
-  .menuIcon,
-  .menuIcon::before,
-  .menuIcon::after {
-    display: block;
-    position: absolute;
-    height: 2px;
     width: 100%;
-    background: linear-gradient(135deg, #673AB7, #9C27B0);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 2px;
+    text-align: center;
   }
-  
-  .menuIcon {
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  
-  .menuIcon::before {
-    content: "";
-    top: -8px;
-  }
-  
-  .menuIcon::after {
-    content: "";
-    bottom: -8px;
-  }
-  
-  @media (max-width: 768px) {
-    .header {
-      background: rgba(255, 255, 255, 0.98);
-      -webkit-backdrop-filter: blur(10px);
-      backdrop-filter: blur(10px);
-    }
-  
-    .container {
-      padding: 0.75rem 1.5rem;
-    }
-  
-    .nav {
-      position: fixed;
-      top: 70px;
-      left: 0;
-      width: 100%;
-      height: 0;
-      background: rgba(255, 255, 255, 0.98);
-      -webkit-backdrop-filter: blur(10px);
-      backdrop-filter: blur(10px);
-      overflow: hidden;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 4px 20px rgba(103, 58, 183, 0.15);
-    }
-  
-    .nav.active {
-      height: calc(100vh - 70px);
-    }
-  
-    .navList {
-      flex-direction: column;
-      padding: 2rem;
-      gap: 1.5rem;
-    }
-  
-    .navItem {
-      width: 100%;
-    }
-  
-    .navLink {
-      display: block;
-      padding: 0.75rem 0;
-      font-size: 1.1rem;
-    }
-  
-    .menuButton {
-      display: block;
-    }
-  
-    .menuButton.active .menuIcon {
-      background: transparent;
-    }
-  
-    .menuButton.active .menuIcon::before {
-      transform: translateY(8px) rotate(45deg);
-    }
-  
-    .menuButton.active .menuIcon::after {
-      transform: translateY(-8px) rotate(-45deg);
-    }
-  
-    .searchContainer {
-      display: none;
-    }
-  
-    .authButtons {
-      display: none;
-    }
-  }
+}
   

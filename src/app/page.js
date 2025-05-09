@@ -1,5 +1,7 @@
+"use client";
 import Link from "next/link"
 import styles from "./page.module.css"
+import { useEffect, useRef, useState } from "react"
 
 export default function Home() {
   // Stats data
@@ -67,14 +69,50 @@ export default function Home() {
       rating: 5,
       image: "/avatar1.jpg"
     },
-    { 
-      id: 2, 
-      name: "Alex Rodriguez", 
+    {
+      id: 2,
+      name: "Alex Rodriguez",
       role: "Engineering Student",
       university: "MIT",
-      text: "The AI-powered note organization and automatic concept linking have saved me hours of study time.", 
+      text: "The AI-powered note organization and automatic concept linking have saved me hours of study time.",
       rating: 5,
       image: "/avatar2.jpg"
+    },
+    {
+      id: 3,
+      name: "Priya Singh",
+      role: "High School Student",
+      university: "Delhi Public School",
+      text: "I love how easy it is to find and review my notes before exams. The quizzes are super helpful!",
+      rating: 4,
+      image: "/avatar3.jpg"
+    },
+    {
+      id: 4,
+      name: "Michael Brown",
+      role: "History Major",
+      university: "Oxford University",
+      text: "The concept mapping and AI summaries make studying so much more efficient. Highly recommended!",
+      rating: 5,
+      image: "/avatar4.jpg"
+    },
+    {
+      id: 5,
+      name: "Emily Wang",
+      role: "Biology Student",
+      university: "Stanford University",
+      text: "The clean design and smart features make Note-Ginie my favorite study tool.",
+      rating: 5,
+      image: "/avatar5.jpg"
+    },
+    {
+      id: 6,
+      name: "Lucas Meyer",
+      role: "Computer Science Student",
+      university: "TU Munich",
+      text: "The AI-powered summaries and analytics help me focus on what matters most. Love the interface!",
+      rating: 5,
+      image: "/avatar6.jpg"
     },
   ]
 
@@ -109,6 +147,66 @@ export default function Home() {
       benefits: ["Progress tracking", "Study patterns", "Performance insights"]
     },
   ]
+
+  // Carousel logic for infinite loop
+  const [current, setCurrent] = useState(0)
+  const [visibleCount, setVisibleCount] = useState(2)
+  const [isTransitioning, setIsTransitioning] = useState(false)
+  const testimonialCount = testimonials.length
+  const intervalRef = useRef()
+  const carouselRef = useRef()
+
+  // Responsive visibleCount
+  useEffect(() => {
+    function updateVisibleCount() {
+      if (window.innerWidth < 768) {
+        setVisibleCount(1)
+      } else {
+        setVisibleCount(2)
+      }
+    }
+    updateVisibleCount()
+    window.addEventListener('resize', updateVisibleCount)
+    return () => window.removeEventListener('resize', updateVisibleCount)
+  }, [])
+
+  // Infinite loop logic
+  const slides = [
+    ...testimonials.slice(-visibleCount),
+    ...testimonials,
+    ...testimonials.slice(0, visibleCount)
+  ]
+  const slideCount = slides.length
+  const realSlideStart = visibleCount
+  const realSlideEnd = testimonialCount + visibleCount
+
+  // Set up auto-scroll
+  useEffect(() => {
+    intervalRef.current = setInterval(() => {
+      setIsTransitioning(true)
+      setCurrent((prev) => prev + 1)
+    }, 4000)
+    return () => clearInterval(intervalRef.current)
+  }, [visibleCount, testimonialCount])
+
+  // Handle transition end for infinite loop
+  useEffect(() => {
+    if (!isTransitioning) return
+    const handle = setTimeout(() => {
+      setIsTransitioning(false)
+      if (current >= realSlideEnd) {
+        setCurrent(realSlideStart)
+      } else if (current < realSlideStart) {
+        setCurrent(realSlideEnd - 1)
+      }
+    }, 700)
+    return () => clearTimeout(handle)
+  }, [current, isTransitioning, realSlideEnd, realSlideStart])
+
+  // Initialize current index
+  useEffect(() => {
+    setCurrent(realSlideStart)
+  }, [visibleCount, realSlideStart])
 
   return (
     <div className={styles.container}>
@@ -219,24 +317,48 @@ export default function Home() {
           <p className={styles.sectionSubtitle}>See how Note-Ginie is transforming study habits</p>
           <button className={styles.reviewButton}>Share Your Success Story</button>
         </div>
-
-        <div className={styles.testimonialGrid}>
-          {testimonials.map((testimonial) => (
-            <div key={testimonial.id} className={styles.testimonialCard}>
-              <div className={styles.testimonialHeader}>
-                <div className={styles.testimonialAvatar}>
-                  <img src={testimonial.image} alt={testimonial.name} />
+        <div className={styles.testimonialGrid} style={{overflow: 'hidden', position: 'relative'}}>
+          <div
+            ref={carouselRef}
+            style={{
+              display: 'flex',
+              transition: isTransitioning ? 'transform 0.7s cubic-bezier(0.4,0,0.2,1)' : 'none',
+              transform: `translateX(-${current * (100 / visibleCount)}%)`,
+              width: `${(slideCount / visibleCount) * 100}%`
+            }}
+          >
+            {slides.map((testimonial, idx) => (
+              <div
+                key={testimonial.id + '-' + idx}
+                className={styles.testimonialCard}
+                style={{
+                  minWidth: `calc(${100 / slideCount}% - 30px)`,
+                  marginRight: 30,
+                  opacity: idx >= current && idx < current + visibleCount ? 1 : 0.7,
+                  transition: 'opacity 0.5s'
+                }}
+              >
+                <div className={styles.testimonialHeader}>
+                  <div className={styles.testimonialAvatar}>
+                    <img src={testimonial.image} alt={testimonial.name} />
+                  </div>
+                  <div className={styles.testimonialInfo}>
+                    <div className={styles.testimonialName}>{testimonial.name}</div>
+                    <div className={styles.testimonialRole}>{testimonial.role}</div>
+                    <div className={styles.testimonialUniversity}>{testimonial.university}</div>
+                  </div>
+                  <div className={styles.testimonialRating} aria-label={`Rated ${testimonial.rating} out of 5 stars`}>
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <span key={i} style={{ color: i < testimonial.rating ? '#FFD600' : '#E0E0E0', fontSize: '1.2em', marginRight: 2 }}>
+                        ★
+                      </span>
+                    ))}
+                  </div>
                 </div>
-                <div className={styles.testimonialInfo}>
-                <div className={styles.testimonialName}>{testimonial.name}</div>
-                  <div className={styles.testimonialRole}>{testimonial.role}</div>
-                  <div className={styles.testimonialUniversity}>{testimonial.university}</div>
-                </div>
-                <div className={styles.testimonialRating}>{"★".repeat(testimonial.rating)}</div>
+                <p className={styles.testimonialText}>{testimonial.text}</p>
               </div>
-              <p className={styles.testimonialText}>{testimonial.text}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
     </div>
