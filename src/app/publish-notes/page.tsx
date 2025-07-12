@@ -204,6 +204,212 @@ const mockCommunityNotes: CommunityNote[] = [
       { type: 'file', name: 'ml_algorithms.py', url: '#', size: 2048000 },
       { type: 'file', name: 'datasets.csv', url: '#', size: 3072000 }
     ]
+  },
+  {
+    id: "6",
+    title: "Linear Algebra Fundamentals",
+    content: "Essential linear algebra concepts including vectors, matrices, eigenvalues, and eigenvectors. Covers applications in computer graphics, machine learning, and engineering.",
+    subject: "Mathematics",
+    tags: ["linear-algebra", "vectors", "matrices", "mathematics"],
+    author: {
+      name: "Dr. Lisa Wang",
+      avatar: "LW",
+      email: "l.wang@mathuni.edu"
+    },
+    createdAt: new Date("2024-01-25"),
+    updatedAt: new Date("2024-01-30"),
+    views: 187,
+    likes: 31,
+    rating: 4.6,
+    attachments: [
+      { type: 'file', name: 'matrix_operations.pdf', url: '#', size: 1792000 }
+    ]
+  },
+  {
+    id: "7",
+    title: "Thermodynamics and Heat Transfer",
+    content: "Comprehensive study of thermodynamics laws, heat transfer mechanisms, and their applications in engineering systems. Includes practical examples and problem-solving techniques.",
+    subject: "Physics",
+    tags: ["thermodynamics", "heat-transfer", "physics", "engineering"],
+    author: {
+      name: "Prof. Robert Garcia",
+      avatar: "RG",
+      email: "r.garcia@physicstech.edu"
+    },
+    createdAt: new Date("2024-01-20"),
+    updatedAt: new Date("2024-01-28"),
+    views: 143,
+    likes: 22,
+    rating: 4.8,
+    attachments: [
+      { type: 'file', name: 'thermodynamics_formulas.pdf', url: '#', size: 1344000 },
+      { type: 'image', name: 'heat_transfer_diagrams.png', url: '#', size: 896000 }
+    ]
+  },
+  {
+    id: "8",
+    title: "Financial Accounting Principles",
+    content: "Fundamental accounting principles including balance sheets, income statements, cash flow analysis, and financial ratios. Essential for business and finance students.",
+    subject: "Business",
+    tags: ["accounting", "finance", "business", "financial-analysis"],
+    author: {
+      name: "CPA Jennifer Martinez",
+      avatar: "JM",
+      email: "j.martinez@businessschool.edu"
+    },
+    createdAt: new Date("2024-01-18"),
+    updatedAt: new Date("2024-01-26"),
+    views: 216,
+    likes: 38,
+    rating: 4.5,
+    attachments: [
+      { type: 'file', name: 'accounting_basics.pdf', url: '#', size: 2304000 },
+      { type: 'file', name: 'financial_statements.xlsx', url: '#', size: 768000 }
+    ]
+  },
+  {
+    id: "9",
+    title: "Cell Biology and Genetics",
+    content: "Detailed study of cell structure, cellular processes, DNA replication, protein synthesis, and genetic inheritance patterns. Includes microscopy techniques and lab procedures.",
+    subject: "Biology",
+    tags: ["cell-biology", "genetics", "dna", "biology"],
+    author: {
+      name: "Dr. Maria Santos",
+      avatar: "MS",
+      email: "m.santos@biolab.edu"
+    },
+    createdAt: new Date("2024-01-15"),
+    updatedAt: new Date("2024-01-24"),
+    views: 169,
+    likes: 27,
+    rating: 4.7,
+    attachments: [
+      { type: 'file', name: 'cell_biology_notes.pdf', url: '#', size: 3584000 },
+      { type: 'image', name: 'cell_diagrams.jpg', url: '#', size: 1280000 }
+    ]
+  },
+  {
+    id: "10",
+    title: "Shakespeare's Literary Analysis",
+    content: "In-depth analysis of Shakespeare's major works including Hamlet, Romeo and Juliet, and Macbeth. Covers themes, character development, and literary techniques.",
+    subject: "Literature",
+    tags: ["shakespeare", "literature", "drama", "literary-analysis"],
+    author: {
+      name: "Prof. Catherine Brown",
+      avatar: "CB",
+      email: "c.brown@englishlit.edu"
+    },
+    createdAt: new Date("2024-01-12"),
+    updatedAt: new Date("2024-01-22"),
+    views: 124,
+    likes: 18,
+    rating: 4.4,
+    attachments: [
+      { type: 'file', name: 'shakespeare_analysis.pdf', url: '#', size: 1920000 }
+    ]
+  },
+  {
+    id: "11",
+    title: "Statistics and Data Analysis",
+    content: "Comprehensive guide to statistical methods, hypothesis testing, regression analysis, and data visualization. Includes R and Python code examples for practical applications.",
+    subject: "Mathematics",
+    tags: ["statistics", "data-analysis", "hypothesis-testing", "r-programming"],
+    author: {
+      name: "Dr. James Wilson",
+      avatar: "JW",
+      email: "j.wilson@statsuni.edu"
+    },
+    createdAt: new Date("2024-01-10"),
+    updatedAt: new Date("2024-01-20"),
+    views: 203,
+    likes: 35,
+    rating: 4.8,
+    attachments: [
+      { type: 'file', name: 'statistics_guide.pdf', url: '#', size: 2816000 },
+      { type: 'file', name: 'r_code_examples.R', url: '#', size: 512000 }
+    ]
+  },
+  {
+    id: "12",
+    title: "Database Systems and SQL",
+    content: "Complete guide to relational databases, SQL queries, database design, normalization, and optimization. Includes practical exercises and real-world database examples.",
+    subject: "Computer Science",
+    tags: ["database", "sql", "database-design", "programming"],
+    author: {
+      name: "Senior Dev Tom Anderson",
+      avatar: "TA",
+      email: "t.anderson@techcorp.com"
+    },
+    createdAt: new Date("2024-01-08"),
+    updatedAt: new Date("2024-01-18"),
+    views: 267,
+    likes: 42,
+    rating: 4.9,
+    attachments: [
+      { type: 'file', name: 'database_design.pdf', url: '#', size: 2048000 },
+      { type: 'file', name: 'sql_queries.sql', url: '#', size: 256000 }
+    ]
+  },
+  {
+    id: "13",
+    title: "Microeconomics Theory",
+    content: "Fundamental microeconomic concepts including supply and demand, market structures, consumer behavior, and price theory. Essential for economics and business students.",
+    subject: "Economics",
+    tags: ["microeconomics", "supply-demand", "market-theory", "economics"],
+    author: {
+      name: "Prof. Susan Taylor",
+      avatar: "ST",
+      email: "s.taylor@econuni.edu"
+    },
+    createdAt: new Date("2024-01-06"),
+    updatedAt: new Date("2024-01-16"),
+    views: 156,
+    likes: 23,
+    rating: 4.6,
+    attachments: [
+      { type: 'file', name: 'microeconomics_notes.pdf', url: '#', size: 1664000 }
+    ]
+  },
+  {
+    id: "14",
+    title: "Art History: Renaissance Masters",
+    content: "Comprehensive study of Renaissance art and artists including Leonardo da Vinci, Michelangelo, and Raphael. Covers artistic techniques, historical context, and cultural impact.",
+    subject: "Art History",
+    tags: ["renaissance", "art-history", "leonardo-da-vinci", "michelangelo"],
+    author: {
+      name: "Dr. Isabella Romano",
+      avatar: "IR",
+      email: "i.romano@arthistory.edu"
+    },
+    createdAt: new Date("2024-01-04"),
+    updatedAt: new Date("2024-01-14"),
+    views: 98,
+    likes: 15,
+    rating: 4.7,
+    attachments: [
+      { type: 'file', name: 'renaissance_art.pdf', url: '#', size: 4096000 },
+      { type: 'image', name: 'renaissance_paintings.jpg', url: '#', size: 2048000 }
+    ]
+  },
+  {
+    id: "15",
+    title: "Cognitive Psychology",
+    content: "Study of mental processes including perception, memory, attention, and problem-solving. Covers cognitive development theories and applications in education and therapy.",
+    subject: "Psychology",
+    tags: ["cognitive-psychology", "memory", "perception", "psychology"],
+    author: {
+      name: "Dr. Michael Chang",
+      avatar: "MC",
+      email: "m.chang@psychuni.edu"
+    },
+    createdAt: new Date("2024-01-02"),
+    updatedAt: new Date("2024-01-12"),
+    views: 178,
+    likes: 29,
+    rating: 4.5,
+    attachments: [
+      { type: 'file', name: 'cognitive_psychology.pdf', url: '#', size: 2560000 }
+    ]
   }
 ];
 
@@ -254,6 +460,7 @@ export default function CommunityNotes() {
     });
 
     setFilteredNotes(filtered);
+    setCurrentPage(1); // Reset to first page when filters change
   }, [searchQuery, selectedSubject, sortBy, notes]);
 
   const formatFileSize = (bytes: number) => {
@@ -288,8 +495,53 @@ export default function CommunityNotes() {
     URL.revokeObjectURL(url);
   };
 
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredNotes.length / notesPerPage);
+  const startIndex = (currentPage - 1) * notesPerPage;
+  const endIndex = startIndex + notesPerPage;
+  const currentNotes = filteredNotes.slice(startIndex, endIndex);
+
+  // Generate page numbers for pagination
+  const getPageNumbers = () => {
+    const pages = [];
+    const showPages = 5; // Show 5 page numbers at most
+    
+    if (totalPages <= showPages) {
+      // Show all pages if total is less than or equal to showPages
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Show pages with ellipsis logic
+      const startPage = Math.max(1, currentPage - 2);
+      const endPage = Math.min(totalPages, currentPage + 2);
+      
+      if (startPage > 1) {
+        pages.push(1);
+        if (startPage > 2) pages.push('ellipsis');
+      }
+      
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+      }
+      
+      if (endPage < totalPages) {
+        if (endPage < totalPages - 1) pages.push('ellipsis');
+        pages.push(totalPages);
+      }
+    }
+    
+    return pages;
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to top of the notes section
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Transform notes data for HoverEffect component
-  const hoverEffectItems = filteredNotes.map((note) => ({
+  const hoverEffectItems = currentNotes.map((note) => ({
     title: note.title,
     description: note.content,
     link: note.id,
@@ -504,26 +756,67 @@ export default function CommunityNotes() {
               {/* Notes Grid */}
               <div className="flex-1 p-6">
                 <div className="mb-4 text-gray-400 text-sm">
-                  Showing {filteredNotes.length} of {notes.length} notes
+                  Showing {startIndex + 1}-{Math.min(endIndex, filteredNotes.length)} of {filteredNotes.length} notes
+                  {filteredNotes.length !== notes.length && ` (filtered from ${notes.length} total)`}
                 </div>
                 
                 <HoverEffect items={hoverEffectItems} className="gap-6" />
+                
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="mt-8 flex justify-center">
+                    <Pagination>
+                      <PaginationContent>
+                        <PaginationItem>
+                          <PaginationPrevious 
+                            onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
+                            className={currentPage <= 1 ? 'opacity-50 cursor-not-allowed pointer-events-none' : 'cursor-pointer'}
+                          />
+                        </PaginationItem>
+                        
+                        {getPageNumbers().map((page, index) => (
+                          <PaginationItem key={index}>
+                            {page === 'ellipsis' ? (
+                              <PaginationEllipsis />
+                            ) : (
+                              <PaginationLink
+                                onClick={() => handlePageChange(page as number)}
+                                isActive={currentPage === page}
+                                className="cursor-pointer"
+                              >
+                                {page}
+                              </PaginationLink>
+                            )}
+                          </PaginationItem>
+                        ))}
+                        
+                        <PaginationItem>
+                          <PaginationNext 
+                            onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
+                            className={currentPage >= totalPages ? 'opacity-50 cursor-not-allowed pointer-events-none' : 'cursor-pointer'}
+                          />
+                        </PaginationItem>
+                      </PaginationContent>
+                    </Pagination>
+                  </div>
+                )}
 
                 {filteredNotes.length === 0 && (
                   <div className="text-center py-12">
                     <Users className="w-16 h-16 text-gray-500 mx-auto mb-4" />
                     <h3 className="text-xl font-medium text-white mb-2">No notes found</h3>
                     <p className="text-gray-400 mb-4">Try adjusting your search or filter criteria</p>
-                    <Button
-                      onClick={() => {
-                        setSearchQuery('');
-                        setSelectedSubject('all');
-                        setSortBy('recent');
-                      }}
-                      className="bg-blue-600 hover:bg-blue-700 text-white"
-                    >
-                      Clear Filters
-                    </Button>
+                                         <Button
+                       onClick={() => {
+                         setSearchQuery('');
+                         setSelectedSubject('all');
+                         setSortBy('recent');
+                         setCurrentPage(1);
+                       }}
+                       className="bg-blue-600 hover:bg-blue-700 text-white"
+                     >
+                       Clear Filters
+                     </Button>
                   </div>
                 )}
               </div>
