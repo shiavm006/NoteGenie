@@ -173,7 +173,7 @@ export default function GinieHelp() {
 
   return (
     <SidebarProvider>
-      <div className="flex h-screen bg-black text-white">
+      <div className="flex h-screen flex-1 w-full min-w-0 bg-black text-white">
         {/* Sidebar - Clean without search bar */}
         <Sidebar className="bg-black border-r border-gray-800">
           <SidebarHeader className="p-4 border-b border-gray-800">
@@ -235,7 +235,7 @@ export default function GinieHelp() {
               {messages.length === 0 ? (
                 /* Welcome Screen - Centered */
                 <div className="h-full flex items-center justify-center px-8">
-                  <div className="text-center max-w-2xl">
+                  <div className="text-center w-full">
                     <h1 className="text-4xl font-bold text-white mb-4">Welcome to Note Ginie</h1>
                     <p className="text-xl text-gray-400 mb-2">What do you want to explore today?</p>
                     <p className="text-lg text-gray-500">
@@ -245,11 +245,11 @@ export default function GinieHelp() {
                 </div>
               ) : (
                 /* Chat Messages */
-                <div className="h-full p-6">
-                  <div className="max-w-4xl mx-auto space-y-6">
+                <div className="h-full py-6 px-4">
+                  <div className="w-full space-y-6">
                     {messages.map((msg) => (
-                      <div key={msg.id} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`max-w-2xl ${msg.type === 'user' ? 'ml-12' : 'mr-12'}`}>
+                      <div key={msg.id} className={`flex w-full ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+                        <div className={`flex-1 ${msg.type === 'user' ? 'ml-3' : 'mr-3'}`}>
                           <div className="flex items-start space-x-3">
                             {msg.type === 'ai' && (
                               <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
@@ -257,7 +257,7 @@ export default function GinieHelp() {
                               </div>
                             )}
                             <div className="flex-1">
-                              <div className={`p-4 rounded-lg ${
+                              <div className={`p-4 rounded-lg w-full max-w-none ${
                                 msg.type === 'user' 
                                   ? 'bg-blue-600 text-white' 
                                   : 'bg-gray-800 text-white'
@@ -266,11 +266,11 @@ export default function GinieHelp() {
                                   <div className="mb-3 space-y-2">
                                     {msg.attachments.map((attachment, index) => (
                                       <div key={index} className="flex items-center space-x-2 p-2 bg-black/20 rounded">
-                                                                {attachment.type === 'image' ? (
-                          <Image className="w-4 h-4" aria-label="Image attachment" />
-                        ) : (
-                          <FileText className="w-4 h-4" aria-label="File attachment" />
-                        )}
+                                        {attachment.type === 'image' ? (
+                                          <Image className="w-4 h-4" />
+                                        ) : (
+                                          <FileText className="w-4 h-4" />
+                                        )}
                                         <span className="text-sm">{attachment.name}</span>
                                       </div>
                                     ))}
@@ -302,8 +302,8 @@ export default function GinieHelp() {
                     ))}
                     
                     {isLoading && (
-                      <div className="flex justify-start">
-                        <div className="max-w-2xl mr-12">
+                      <div className="flex w-full justify-start">
+                        <div className="flex-1 mr-3">
                           <div className="flex items-start space-x-3">
                             <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                               <Bot className="w-4 h-4 text-white" />
@@ -327,17 +327,17 @@ export default function GinieHelp() {
             </div>
 
             {/* Input Area - Fixed at bottom */}
-            <div className="border-t border-gray-800 p-6 bg-black">
-              <div className="max-w-4xl mx-auto">
+            <div className="border-t border-gray-800 py-6 px-4 bg-black">
+              <div className="w-full">
                 {/* Attachments Preview */}
                 {attachments.length > 0 && (
                   <div className="mb-4 flex flex-wrap gap-2">
                     {attachments.map((file, index) => (
                       <div key={index} className="flex items-center space-x-2 bg-gray-800 px-3 py-2 rounded-lg">
                         {file.type.startsWith('image/') ? (
-                          <Image className="w-4 h-4" aria-label="Image file" />
+                          <Image className="w-4 h-4" />
                         ) : (
-                          <FileText className="w-4 h-4" aria-label="Document file" />
+                          <FileText className="w-4 h-4" />
                         )}
                         <span className="text-sm">{file.name}</span>
                         <button
@@ -369,7 +369,7 @@ export default function GinieHelp() {
                         className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
                         title="Upload image"
                       >
-                        <Image className="w-5 h-5" aria-label="Upload image" />
+                        <Image className="w-5 h-5" />
                       </button>
                     </div>
                     
