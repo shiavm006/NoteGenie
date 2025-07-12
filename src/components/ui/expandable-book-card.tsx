@@ -83,7 +83,7 @@ export default function ExpandableBookCard({ books, onAddToLibrary }: Expandable
         {active && typeof active === "object" ? (
           <div className="fixed inset-0 grid place-items-center z-[100]">
             <motion.button
-              key={`button-${active.title}-${id}`}
+              key={`button-${active.id}-${id}`}
               layout
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -94,11 +94,11 @@ export default function ExpandableBookCard({ books, onAddToLibrary }: Expandable
               <CloseIcon />
             </motion.button>
             <motion.div
-              layoutId={`card-${active.title}-${id}`}
+              layoutId={`card-${active.id}-${id}`}
               ref={ref}
               className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
             >
-              <motion.div layoutId={`image-${active.title}-${id}`}>
+              <motion.div layoutId={`image-${active.id}-${id}`}>
                 <img
                   width={200}
                   height={200}
@@ -112,13 +112,13 @@ export default function ExpandableBookCard({ books, onAddToLibrary }: Expandable
                 <div className="flex justify-between items-start p-4">
                   <div className="flex-1">
                     <motion.h3
-                      layoutId={`title-${active.title}-${id}`}
+                      layoutId={`title-${active.id}-${id}`}
                       className="font-bold text-neutral-700 dark:text-neutral-200 mb-2"
                     >
                       {active.title}
                     </motion.h3>
                     <motion.p
-                      layoutId={`description-${active.authors.join(', ')}-${id}`}
+                      layoutId={`description-${active.id}-${id}`}
                       className="text-neutral-600 dark:text-neutral-400 mb-2"
                     >
                       by {active.authors.join(', ')}
@@ -133,7 +133,7 @@ export default function ExpandableBookCard({ books, onAddToLibrary }: Expandable
 
                   <div className="flex flex-col gap-2 ml-4">
                     <motion.button
-                      layoutId={`button-add-${active.title}-${id}`}
+                      layoutId={`button-add-${active.id}-${id}`}
                       onClick={() => onAddToLibrary(active)}
                       className="px-4 py-2 text-sm rounded-full font-bold bg-green-500 text-white hover:bg-green-600 transition-colors"
                     >
@@ -170,13 +170,13 @@ export default function ExpandableBookCard({ books, onAddToLibrary }: Expandable
       <div className="w-full space-y-4">
         {books.map((book) => (
           <motion.div
-            layoutId={`card-${book.title}-${id}`}
-            key={`card-${book.title}-${id}`}
+            layoutId={`card-${book.id}-${id}`}
+            key={`card-${book.id}-${id}`}
             onClick={() => setActive(book)}
             className="p-4 flex flex-col md:flex-row justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer border border-neutral-200 dark:border-neutral-700"
           >
             <div className="flex gap-4 flex-col md:flex-row">
-              <motion.div layoutId={`image-${book.title}-${id}`}>
+              <motion.div layoutId={`image-${book.id}-${id}`}>
                 <img
                   width={100}
                   height={100}
@@ -187,13 +187,13 @@ export default function ExpandableBookCard({ books, onAddToLibrary }: Expandable
               </motion.div>
               <div className="flex-1">
                 <motion.h3
-                  layoutId={`title-${book.title}-${id}`}
+                  layoutId={`title-${book.id}-${id}`}
                   className="font-medium text-neutral-800 dark:text-neutral-200 text-center md:text-left mb-1"
                 >
                   {book.title}
                 </motion.h3>
                 <motion.p
-                  layoutId={`description-${book.authors.join(', ')}-${id}`}
+                  layoutId={`description-${book.id}-${id}`}
                   className="text-neutral-600 dark:text-neutral-400 text-center md:text-left text-sm mb-2"
                 >
                   by {book.authors.join(', ')}
@@ -210,13 +210,13 @@ export default function ExpandableBookCard({ books, onAddToLibrary }: Expandable
             </div>
             <div className="flex gap-2 mt-4 md:mt-0">
               <motion.button
-                layoutId={`button-preview-${book.title}-${id}`}
+                layoutId={`button-preview-${book.id}-${id}`}
                 className="px-4 py-2 text-sm rounded-full font-bold bg-purple-500 hover:bg-purple-600 text-white transition-colors"
               >
                 Preview
               </motion.button>
               <motion.button
-                layoutId={`button-add-${book.title}-${id}`}
+                layoutId={`button-add-${book.id}-${id}`}
                 onClick={(e) => {
                   e.stopPropagation();
                   onAddToLibrary(book);
