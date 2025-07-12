@@ -22,7 +22,6 @@ import {
   FileText,
   LogOut,
   Search,
-  Filter,
   Settings,
 } from "lucide-react";
 import ExpandableBookCard from "@/components/ui/expandable-book-card";

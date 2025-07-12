@@ -124,7 +124,7 @@ export default function PublishNotes() {
                   <div className="text-center">
                     <FileText className="w-16 h-16 text-gray-500 mx-auto mb-4" />
                     <h3 className="text-xl font-medium text-white mb-2">Publishing Feature Coming Soon</h3>
-                    <p className="text-gray-400">We're working on building a note publishing platform for you.</p>
+                    <p className="text-gray-400">We&apos;re working on building a note publishing platform for you.</p>
                   </div>
                 </div>
               </div>

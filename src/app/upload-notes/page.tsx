@@ -124,7 +124,7 @@ export default function UploadNotes() {
                   <div className="text-center">
                     <Upload className="w-16 h-16 text-gray-500 mx-auto mb-4" />
                     <h3 className="text-xl font-medium text-white mb-2">Upload Feature Coming Soon</h3>
-                    <p className="text-gray-400">We're working on building a powerful note upload system for you.</p>
+                    <p className="text-gray-400">We&apos;re working on building a powerful note upload system for you.</p>
                   </div>
                 </div>
               </div>

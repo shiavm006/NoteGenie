@@ -266,11 +266,11 @@ export default function GinieHelp() {
                                   <div className="mb-3 space-y-2">
                                     {msg.attachments.map((attachment, index) => (
                                       <div key={index} className="flex items-center space-x-2 p-2 bg-black/20 rounded">
-                                        {attachment.type === 'image' ? (
-                                          <Image className="w-4 h-4" />
-                                        ) : (
-                                          <FileText className="w-4 h-4" />
-                                        )}
+                                                                {attachment.type === 'image' ? (
+                          <Image className="w-4 h-4" aria-label="Image attachment" />
+                        ) : (
+                          <FileText className="w-4 h-4" aria-label="File attachment" />
+                        )}
                                         <span className="text-sm">{attachment.name}</span>
                                       </div>
                                     ))}
@@ -335,9 +335,9 @@ export default function GinieHelp() {
                     {attachments.map((file, index) => (
                       <div key={index} className="flex items-center space-x-2 bg-gray-800 px-3 py-2 rounded-lg">
                         {file.type.startsWith('image/') ? (
-                          <Image className="w-4 h-4" />
+                          <Image className="w-4 h-4" aria-label="Image file" />
                         ) : (
-                          <FileText className="w-4 h-4" />
+                          <FileText className="w-4 h-4" aria-label="Document file" />
                         )}
                         <span className="text-sm">{file.name}</span>
                         <button
@@ -369,7 +369,7 @@ export default function GinieHelp() {
                         className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
                         title="Upload image"
                       >
-                        <Image className="w-5 h-5" />
+                        <Image className="w-5 h-5" aria-label="Upload image" />
                       </button>
                     </div>
                     
