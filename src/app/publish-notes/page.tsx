@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import PageHeader from '@/components/layout/page-header';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface CommunityNote {
   id: string;
@@ -513,10 +514,13 @@ export default function CommunityNotes() {
         </div>
 
         {/* Author Info */}
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-            <span className="text-white font-bold text-xs">{note.author.avatar}</span>
-          </div>
+            <div className="flex items-center space-x-3">
+          <Avatar className="w-8 h-8">
+            <AvatarImage src={`https://github.com/${note.author.avatar.toLowerCase()}.png`} alt={note.author.name} />
+            <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold text-xs">
+              {note.author.avatar}
+            </AvatarFallback>
+          </Avatar>
           <div>
             <p className="text-white text-sm font-medium">{note.author.name}</p>
             <p className="text-gray-400 text-xs">{note.updatedAt.toLocaleDateString()}</p>
@@ -535,11 +539,11 @@ export default function CommunityNotes() {
               +{note.tags.length - 3} more
             </span>
           )}
-        </div>
+              </div>
 
         {/* Attachments */}
         {note.attachments.length > 0 && (
-          <div>
+              <div>
             <p className="text-xs text-gray-500 mb-2">
               {note.attachments.length} attachment(s)
             </p>
@@ -549,7 +553,7 @@ export default function CommunityNotes() {
                   <FileText className="w-3 h-3" />
                   <span className="truncate">{attachment.name}</span>
                   <span>({formatFileSize(attachment.size)})</span>
-                </div>
+              </div>
               ))}
             </div>
           </div>
@@ -566,8 +570,8 @@ export default function CommunityNotes() {
               <Heart className="w-3 h-3" />
               <span>{note.likes}</span>
             </div>
-          </div>
-        </div>
+              </div>
+            </div>
 
         {/* Actions */}
         <div className="flex space-x-2 pt-2">
@@ -651,12 +655,12 @@ export default function CommunityNotes() {
       </div>
 
       {/* Notes Grid */}
-      <div className="mb-8">
+              <div className="mb-8">
         <div className="mb-4 text-gray-400 text-sm">
           Showing {startIndex + 1}-{Math.min(endIndex, filteredNotes.length)} of {filteredNotes.length} notes
           {filteredNotes.length !== notes.length && ` (filtered from ${notes.length} total)`}
-        </div>
-        
+              </div>
+
         <HoverEffect items={hoverEffectItems} className="gap-6" />
         
         {/* Pagination */}
@@ -695,7 +699,7 @@ export default function CommunityNotes() {
                 </PaginationItem>
               </PaginationContent>
             </Pagination>
-          </div>
+              </div>
         )}
 
         {filteredNotes.length === 0 && (

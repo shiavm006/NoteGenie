@@ -24,6 +24,7 @@ import {
   LogOut,
   Users,
 } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 // Menu items configuration
 const menuItems = [
@@ -67,9 +68,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <Sidebar className="bg-black border-r border-gray-800">
           <SidebarHeader className="p-4 border-b border-gray-800">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-sm">A</span>
-              </div>
+              <Avatar className="w-8 h-8">
+                <AvatarImage src="https://github.com/shadcn.png" alt="Shivam Mittal" />
+                <AvatarFallback className="bg-blue-600 text-white font-bold text-sm">
+                  S
+                </AvatarFallback>
+              </Avatar>
               <div>
                 <p className="text-white font-medium text-sm">Shivam Mittal</p>
                 <p className="text-gray-400 text-xs">Pro Plan</p>
