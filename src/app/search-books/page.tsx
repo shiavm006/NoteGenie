@@ -1,30 +1,12 @@
 'use client';
-
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarHeader,
-  SidebarInset,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarProvider,
-} from "@/components/ui/sidebar";
-import {
-  BookOpen,
-  HelpCircle,
-  Upload,
-  FileText,
-  LogOut,
-  Search,
-  Settings,
-} from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Search, BookOpen, Plus, ExternalLink } from "lucide-react";
 import ExpandableBookCard from "@/components/ui/expandable-book-card";
+import DashboardLayout from '@/components/layout/dashboard-layout';
+import PageHeader from '@/components/layout/page-header';
 
 interface Book {
   id: string;
@@ -44,36 +26,6 @@ interface Book {
   }>;
   infoLink?: string;
 }
-
-// Menu items
-const items = [
-  {
-    title: "General",
-    icon: Settings,
-    href: "/general",
-  },
-  {
-    title: "Search Books",
-    icon: BookOpen,
-    href: "/search-books",
-    active: true,
-  },
-  {
-    title: "Ginie Help",
-    icon: HelpCircle,
-    href: "/ginie-help",
-  },
-  {
-    title: "Upload Notes",
-    icon: Upload,
-    href: "/upload-notes",
-  },
-  {
-    title: "Publish Notes",
-    icon: FileText,
-    href: "/publish-notes",
-  },
-];
 
 const randomSearchTerms = [
   'programming', 'javascript', 'react', 'python', 'design', 'business', 
@@ -183,135 +135,116 @@ export default function SearchBooks() {
   const showingSearchResults = searchResults.length > 0;
 
   return (
-    <SidebarProvider>
-      <div className="flex h-screen bg-black text-white">
-        <Sidebar className="bg-black border-r border-gray-800">
-          <SidebarHeader className="p-4 border-b border-gray-800">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-sm">A</span>
-              </div>
-              <div>
-                <p className="text-white font-medium text-sm">abhardw7@kent.edu</p>
-                <p className="text-gray-400 text-xs">Pro Plan</p>
-              </div>
-            </div>
-          </SidebarHeader>
-          
-          <SidebarContent className="px-4 py-4">
-            <SidebarGroup>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {items.map((item) => (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton 
-                        asChild
-                        className={`text-gray-400 hover:text-white hover:bg-gray-800 transition-all duration-200 w-full ${item.active ? 'bg-gray-800 text-white' : ''}`}
-                      >
-                        <Link href={item.href} className="flex items-center space-x-3 w-full px-3 py-2 rounded-md">
-                          <item.icon className="w-4 h-4" />
-                          <span className="font-normal text-sm">{item.title}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          </SidebarContent>
-          
-          <SidebarFooter className="p-4 border-t border-gray-800">
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  asChild
-                  className="text-gray-400 hover:text-white hover:bg-red-800 transition-all duration-200"
-                >
-                  <Link href="/auth" className="flex items-center space-x-3 w-full px-3 py-2 rounded-md">
-                    <LogOut className="w-4 h-4" />
-                    <span className="font-normal text-sm">Log Out</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarFooter>
-        </Sidebar>
-        
-        <SidebarInset className="flex-1 bg-black">
-          <div className="h-full overflow-y-auto">
-            <div className="min-h-full flex flex-col">
-              {/* Main Content Container - Full width */}
-              <div className="flex-1 w-full px-6 py-8">
-                {/* Header */}
-                <div className="mb-8">
-                  <h1 className="text-3xl font-semibold text-white mb-2">Search Books</h1>
-                  <p className="text-gray-400">Discover and add books to your library</p>
-                </div>
+    <DashboardLayout>
+      <PageHeader 
+        title="Search Books" 
+        description="Discover and add books to your collection" 
+      />
 
-                {/* Search Form */}
-                <form onSubmit={handleSearch} className="mb-8">
-                  <div className="flex gap-4">
-                    <div className="flex-1 relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                      <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search for books by title, author, or ISBN..."
-                        className="w-full pl-10 pr-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
-                      />
-                    </div>
-                    <button
-                      type="submit"
-                      disabled={isLoading}
-                      className="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 text-white rounded-lg font-medium transition-colors disabled:cursor-not-allowed"
-                    >
-                      {isLoading ? 'Searching...' : 'Search'}
-                    </button>
-                  </div>
-                </form>
-
-                {/* Results Section */}
-                {error && (
-                  <div className="mb-6 p-4 bg-red-900 border border-red-700 rounded-lg">
-                    <p className="text-red-200">{error}</p>
-                  </div>
-                )}
-
-                <div className="mb-6">
-                  <h2 className="text-xl font-medium text-white mb-4">
-                    {showingSearchResults ? `Search Results (${searchResults.length})` : 'Recommended Books'}
-                  </h2>
-                  
-                  {isLoadingRandom && !showingSearchResults && (
-                    <div className="text-center py-8">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-4"></div>
-                      <p className="text-gray-400">Loading recommended books...</p>
-                    </div>
-                  )}
-
-                  {displayBooks.length > 0 && (
-                    <div className="w-full">
-                      <ExpandableBookCard
-                        books={displayBooks}
-                        onAddToLibrary={handleAddToLibrary}
-                      />
-                    </div>
-                  )}
-
-                  {displayBooks.length === 0 && !isLoading && !isLoadingRandom && (
-                    <div className="text-center py-12">
-                      <BookOpen className="w-16 h-16 text-gray-500 mx-auto mb-4" />
-                      <h3 className="text-xl font-medium text-white mb-2">No books found</h3>
-                      <p className="text-gray-400">Try searching with different keywords</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
+      {/* Search Section */}
+      <div className="mb-8">
+        <form onSubmit={handleSearch} className="flex gap-4 mb-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Input
+              type="text"
+              placeholder="Search for books..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 bg-gray-900 border-gray-700 text-white placeholder-gray-400 focus:border-blue-500"
+            />
           </div>
-        </SidebarInset>
+          <Button 
+            type="submit" 
+            disabled={isLoading}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6"
+          >
+            {isLoading ? 'Searching...' : 'Search'}
+          </Button>
+        </form>
+
+        {error && (
+          <div className="bg-red-900 border border-red-700 text-red-200 px-4 py-3 rounded-md mb-4">
+            {error}
+          </div>
+        )}
+
+        {showingSearchResults && (
+          <div className="flex items-center justify-between">
+            <p className="text-gray-400">
+              Found {searchResults.length} results for "{searchQuery}"
+            </p>
+            <Button 
+              onClick={() => {
+                setSearchQuery('');
+                setSearchResults([]);
+              }}
+              variant="outline"
+              size="sm"
+              className="text-gray-400 border-gray-700 hover:bg-gray-800"
+            >
+              Clear Results
+            </Button>
+          </div>
+        )}
       </div>
-    </SidebarProvider>
+
+      {/* Books Grid */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-semibold text-white">
+            {showingSearchResults ? 'Search Results' : 'Recommended Books'}
+          </h2>
+          {!showingSearchResults && (
+            <Button 
+              onClick={loadRandomBooks}
+              disabled={isLoadingRandom}
+              variant="outline"
+              size="sm"
+              className="text-gray-400 border-gray-700 hover:bg-gray-800"
+            >
+              {isLoadingRandom ? 'Loading...' : 'Refresh'}
+            </Button>
+          )}
+        </div>
+
+        {(isLoadingRandom && !showingSearchResults) ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="bg-gray-900 border border-gray-800 rounded-lg p-4 animate-pulse">
+                <div className="bg-gray-800 h-48 rounded-md mb-4"></div>
+                <div className="bg-gray-800 h-4 rounded mb-2"></div>
+                <div className="bg-gray-800 h-3 rounded mb-2"></div>
+                <div className="bg-gray-800 h-3 rounded w-2/3"></div>
+              </div>
+            ))}
+          </div>
+        ) : displayBooks.length > 0 ? (
+          <ExpandableBookCard books={displayBooks} onAddToLibrary={handleAddToLibrary} />
+        ) : (
+          <div className="text-center py-12">
+            <BookOpen className="w-16 h-16 text-gray-500 mx-auto mb-4" />
+            <h3 className="text-white font-medium mb-2">No books found</h3>
+            <p className="text-gray-400 mb-4">
+              {showingSearchResults 
+                ? 'Try searching with different keywords' 
+                : 'Unable to load recommended books'}
+            </p>
+            {showingSearchResults && (
+              <Button 
+                onClick={() => {
+                  setSearchQuery('');
+                  setSearchResults([]);
+                }}
+                variant="outline"
+                className="text-gray-400 border-gray-700 hover:bg-gray-800"
+              >
+                Clear Search
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
+    </DashboardLayout>
   );
 } 

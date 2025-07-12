@@ -55,7 +55,7 @@ const items = [
     href: "/upload-notes",
   },
   {
-    title: "Publish Notes",
+    title: "Community Notes",
     icon: FileText,
     href: "/publish-notes",
   },
@@ -249,7 +249,7 @@ export default function GinieHelp() {
                   <div className="w-full space-y-6">
                     {messages.map((msg) => (
                       <div key={msg.id} className={`flex w-full ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`flex-1 ${msg.type === 'user' ? 'ml-3' : 'mr-3'}`}>
+                        <div className={`${msg.type === 'user' ? 'flex flex-1 justify-end ml-1' : 'flex flex-1 justify-start mr-3'}`}>
                           <div className="flex items-start space-x-3">
                             {msg.type === 'ai' && (
                               <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
@@ -257,10 +257,10 @@ export default function GinieHelp() {
                               </div>
                             )}
                             <div className="flex-1">
-                              <div className={`p-4 rounded-lg w-full max-w-none ${
-                                msg.type === 'user' 
-                                  ? 'bg-blue-600 text-white' 
-                                  : 'bg-gray-800 text-white'
+                              <div className={`p-4 rounded-lg inline-block ${
+                                msg.type === 'user'
+                                  ? 'max-w-[90%] bg-blue-600 text-white'
+                                  : 'max-w-[80%] bg-gray-800 text-white'
                               }`}>
                                 {msg.attachments && msg.attachments.length > 0 && (
                                   <div className="mb-3 space-y-2">
@@ -278,7 +278,7 @@ export default function GinieHelp() {
                                 )}
                                 <p className="whitespace-pre-wrap">{msg.content}</p>
                               </div>
-                              <div className="flex items-center justify-between mt-2">
+                              <div className="flex items-center justify-between mt-2 w-max">
                                 <span className="text-xs text-gray-400">
                                   {msg.timestamp.toLocaleTimeString()}
                                 </span>
@@ -303,7 +303,7 @@ export default function GinieHelp() {
                     
                     {isLoading && (
                       <div className="flex w-full justify-start">
-                        <div className="flex-1 mr-3">
+                        <div className="mr-3">
                           <div className="flex items-start space-x-3">
                             <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                               <Bot className="w-4 h-4 text-white" />

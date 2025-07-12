@@ -2,19 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarHeader,
-  SidebarInset,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarProvider,
-} from "@/components/ui/sidebar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { HoverEffect } from "@/components/ui/card-hover-effect";
@@ -28,12 +15,6 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import {
-  Settings,
-  BookOpen,
-  HelpCircle,
-  Upload,
-  FileText,
-  LogOut,
   Search,
   Filter,
   Users,
@@ -44,37 +25,10 @@ import {
   Heart,
   Star,
   User,
+  FileText,
 } from "lucide-react";
-
-// Menu items
-const items = [
-  {
-    title: "General",
-    icon: Settings,
-    href: "/general",
-  },
-  {
-    title: "Search Books",
-    icon: BookOpen,
-    href: "/search-books",
-  },
-  {
-    title: "Ginie Help",
-    icon: HelpCircle,
-    href: "/ginie-help",
-  },
-  {
-    title: "Upload Notes",
-    icon: Upload,
-    href: "/upload-notes",
-  },
-  {
-    title: "Community Notes",
-    icon: Users,
-    href: "/publish-notes",
-    active: true,
-  },
-];
+import DashboardLayout from '@/components/layout/dashboard-layout';
+import PageHeader from '@/components/layout/page-header';
 
 interface CommunityNote {
   id: string;
@@ -646,184 +600,123 @@ export default function CommunityNotes() {
   }));
 
   return (
-    <SidebarProvider>
-      <div className="flex h-screen bg-black text-white">
-        <Sidebar className="bg-black border-r border-gray-800">
-          <SidebarHeader className="p-4 border-b border-gray-800">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-sm">A</span>
-              </div>
-              <div>
-                <p className="text-white font-medium text-sm">abhardw7@kent.edu</p>
-                <p className="text-gray-400 text-xs">Pro Plan</p>
-              </div>
-            </div>
-          </SidebarHeader>
-          
-          <SidebarContent className="px-4 py-4">
-            <SidebarGroup>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {items.map((item) => (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton 
-                        asChild
-                        className={`text-gray-400 hover:text-white hover:bg-gray-800 transition-all duration-200 w-full ${item.active ? 'bg-gray-800 text-white' : ''}`}
-                      >
-                        <Link href={item.href} className="flex items-center space-x-3 w-full px-3 py-2 rounded-md">
-                          <item.icon className="w-4 h-4" />
-                          <span className="font-normal text-sm">{item.title}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          </SidebarContent>
-          
-          <SidebarFooter className="p-4 border-t border-gray-800">
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  asChild
-                  className="text-gray-400 hover:text-white hover:bg-red-800 transition-all duration-200"
-                >
-                  <Link href="/auth" className="flex items-center space-x-3 w-full px-3 py-2 rounded-md">
-                    <LogOut className="w-4 h-4" />
-                    <span className="font-normal text-sm">Log Out</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarFooter>
-        </Sidebar>
-        
-        <SidebarInset className="flex-1 w-full min-w-0 bg-black">
-          <div className="h-full overflow-y-auto">
-            <div className="min-h-full flex flex-col">
-              {/* Header */}
-              <div className="border-b border-gray-800 p-6">
-                <div className="mb-6">
-                  <h1 className="text-3xl font-semibold text-white mb-2">Community Notes</h1>
-                  <p className="text-gray-400">Discover and access notes shared by students worldwide</p>
-                </div>
+    <DashboardLayout>
+      <PageHeader 
+        title="Community Notes" 
+        description="Discover and access notes shared by students worldwide" 
+      />
 
-                {/* Search and Filter Bar */}
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="flex-1 relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                    <Input
-                      placeholder="Search notes, subjects, authors, or tags..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10 bg-gray-900 border-gray-700 text-white placeholder-gray-500"
-                    />
-                  </div>
-                  
-                  <div className="flex gap-2">
-                    <select
-                      value={selectedSubject}
-                      onChange={(e) => setSelectedSubject(e.target.value)}
-                      className="px-4 py-2 bg-gray-900 border border-gray-700 rounded-md text-white text-sm"
-                      title="Filter by subject"
-                      aria-label="Filter by subject"
-                    >
-                      {subjects.map(subject => (
-                        <option key={subject} value={subject}>
-                          {subject === 'all' ? 'All Subjects' : subject}
-                        </option>
-                      ))}
-                    </select>
-                    
-                    <select
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value)}
-                      className="px-4 py-2 bg-gray-900 border border-gray-700 rounded-md text-white text-sm"
-                      title="Sort notes by"
-                      aria-label="Sort notes by"
-                    >
-                      <option value="recent">Most Recent</option>
-                      <option value="popular">Most Viewed</option>
-                      <option value="liked">Most Liked</option>
-                      <option value="rating">Highest Rated</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              {/* Notes Grid */}
-              <div className="flex-1 p-6">
-                <div className="mb-4 text-gray-400 text-sm">
-                  Showing {startIndex + 1}-{Math.min(endIndex, filteredNotes.length)} of {filteredNotes.length} notes
-                  {filteredNotes.length !== notes.length && ` (filtered from ${notes.length} total)`}
-                </div>
-                
-                <HoverEffect items={hoverEffectItems} className="gap-6" />
-                
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <div className="mt-8 flex justify-center">
-                    <Pagination>
-                      <PaginationContent>
-                        <PaginationItem>
-                          <PaginationPrevious 
-                            onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
-                            className={currentPage <= 1 ? 'opacity-50 cursor-not-allowed pointer-events-none' : 'cursor-pointer'}
-                          />
-                        </PaginationItem>
-                        
-                        {getPageNumbers().map((page, index) => (
-                          <PaginationItem key={index}>
-                            {page === 'ellipsis' ? (
-                              <PaginationEllipsis />
-                            ) : (
-                              <PaginationLink
-                                onClick={() => handlePageChange(page as number)}
-                                isActive={currentPage === page}
-                                className="cursor-pointer"
-                              >
-                                {page}
-                              </PaginationLink>
-                            )}
-                          </PaginationItem>
-                        ))}
-                        
-                        <PaginationItem>
-                          <PaginationNext 
-                            onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
-                            className={currentPage >= totalPages ? 'opacity-50 cursor-not-allowed pointer-events-none' : 'cursor-pointer'}
-                          />
-                        </PaginationItem>
-                      </PaginationContent>
-                    </Pagination>
-                  </div>
-                )}
-
-                {filteredNotes.length === 0 && (
-                  <div className="text-center py-12">
-                    <Users className="w-16 h-16 text-gray-500 mx-auto mb-4" />
-                    <h3 className="text-xl font-medium text-white mb-2">No notes found</h3>
-                    <p className="text-gray-400 mb-4">Try adjusting your search or filter criteria</p>
-                                         <Button
-                       onClick={() => {
-                         setSearchQuery('');
-                         setSelectedSubject('all');
-                         setSortBy('recent');
-                         setCurrentPage(1);
-                       }}
-                       className="bg-blue-600 hover:bg-blue-700 text-white"
-                     >
-                       Clear Filters
-                     </Button>
-                  </div>
-                )}
-              </div>
-            </div>
+      {/* Search and Filter Bar */}
+      <div className="mb-8">
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Input
+              placeholder="Search notes, subjects, authors, or tags..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 bg-gray-900 border-gray-700 text-white placeholder-gray-500"
+            />
           </div>
-        </SidebarInset>
+          
+          <div className="flex gap-2">
+            <select
+              value={selectedSubject}
+              onChange={(e) => setSelectedSubject(e.target.value)}
+              className="px-4 py-2 bg-gray-900 border border-gray-700 rounded-md text-white text-sm"
+              title="Filter by subject"
+              aria-label="Filter by subject"
+            >
+              {subjects.map(subject => (
+                <option key={subject} value={subject}>
+                  {subject === 'all' ? 'All Subjects' : subject}
+                </option>
+              ))}
+            </select>
+            
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-4 py-2 bg-gray-900 border border-gray-700 rounded-md text-white text-sm"
+              title="Sort notes by"
+              aria-label="Sort notes by"
+            >
+              <option value="recent">Most Recent</option>
+              <option value="popular">Most Viewed</option>
+              <option value="liked">Most Liked</option>
+              <option value="rating">Highest Rated</option>
+            </select>
+          </div>
+        </div>
       </div>
-    </SidebarProvider>
+
+      {/* Notes Grid */}
+      <div className="mb-8">
+        <div className="mb-4 text-gray-400 text-sm">
+          Showing {startIndex + 1}-{Math.min(endIndex, filteredNotes.length)} of {filteredNotes.length} notes
+          {filteredNotes.length !== notes.length && ` (filtered from ${notes.length} total)`}
+        </div>
+        
+        <HoverEffect items={hoverEffectItems} className="gap-6" />
+        
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="mt-8 flex justify-center">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious 
+                    onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
+                    className={currentPage <= 1 ? 'opacity-50 cursor-not-allowed pointer-events-none' : 'cursor-pointer'}
+                  />
+                </PaginationItem>
+                
+                {getPageNumbers().map((page, index) => (
+                  <PaginationItem key={index}>
+                    {page === 'ellipsis' ? (
+                      <PaginationEllipsis />
+                    ) : (
+                      <PaginationLink
+                        onClick={() => handlePageChange(page as number)}
+                        isActive={currentPage === page}
+                        className="cursor-pointer"
+                      >
+                        {page}
+                      </PaginationLink>
+                    )}
+                  </PaginationItem>
+                ))}
+                
+                <PaginationItem>
+                  <PaginationNext 
+                    onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
+                    className={currentPage >= totalPages ? 'opacity-50 cursor-not-allowed pointer-events-none' : 'cursor-pointer'}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
+
+        {filteredNotes.length === 0 && (
+          <div className="text-center py-12">
+            <Users className="w-16 h-16 text-gray-500 mx-auto mb-4" />
+            <h3 className="text-xl font-medium text-white mb-2">No notes found</h3>
+            <p className="text-gray-400 mb-4">Try adjusting your search or filter criteria</p>
+            <Button
+              onClick={() => {
+                setSearchQuery('');
+                setSelectedSubject('all');
+                setSortBy('recent');
+                setCurrentPage(1);
+              }}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              Clear Filters
+            </Button>
+          </div>
+        )}
+      </div>
+    </DashboardLayout>
   );
 } 

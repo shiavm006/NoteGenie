@@ -59,7 +59,7 @@ const items = [
     active: true,
   },
   {
-    title: "Publish Notes",
+    title: "Community Notes",
     icon: FileText,
     href: "/publish-notes",
   },
@@ -193,7 +193,7 @@ export default function UploadNotes() {
 
   return (
     <SidebarProvider>
-      <div className="flex h-screen bg-black text-white">
+      <div className="flex h-screen flex-1 w-full min-w-0 bg-black text-white">
         <Sidebar className="bg-black border-r border-gray-800">
           <SidebarHeader className="p-4 border-b border-gray-800">
             <div className="flex items-center space-x-3">
