@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import Link from 'next/link';
 import {
   Sidebar,
@@ -370,7 +370,7 @@ export default function UploadNotes() {
                   </div>
                 ) : (
                   /* Create Note Tab */
-                  <div className="w-full max-w-4xl mx-auto">
+                  <div className="w-full">
                     <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
                       <h2 className="text-2xl font-semibold text-white mb-6">
                         {editingNote ? 'Edit Note' : 'Create New Note'}
