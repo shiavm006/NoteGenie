@@ -81,6 +81,7 @@ export default function GinieHelp() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [attachments, setAttachments] = useState<File[]>([]);
+  const [apiKeyConfigured, setApiKeyConfigured] = useState(true);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -119,40 +120,72 @@ export default function GinieHelp() {
     setIsLoading(true);
 
     try {
-      // Simulate AI response (replace with actual Gemini API call)
-      setTimeout(() => {
+      // Call Gemini API
+      const response = await fetch('/api/gemini', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: message,
+          attachments: attachments.map(file => ({
+            name: file.name,
+            type: file.type.startsWith('image/') ? 'image' : 'file',
+            size: file.size,
+          })),
+          conversationHistory: messages.slice(-5), // Send last 5 messages for context
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
         const aiMessage: Message = {
           id: (Date.now() + 1).toString(),
           type: 'ai',
-          content: generateAIResponse(message, attachments),
+          content: data.response,
           timestamp: new Date(),
         };
 
         setMessages([...updatedMessages, aiMessage]);
-        setIsLoading(false);
-      }, 1500);
+      } else {
+        // Handle API error
+        let errorContent = 'Sorry, I encountered an error. Please try again.';
+        
+        if (data.error === 'Gemini API key not configured') {
+          errorContent = 'AI features are not configured. Please set up your Gemini API key in the environment variables.';
+          setApiKeyConfigured(false);
+        } else if (data.error) {
+          errorContent = `Sorry, I encountered an error: ${data.error}. Please try again.`;
+        }
+
+        const errorMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          type: 'ai',
+          content: errorContent,
+          timestamp: new Date(),
+        };
+
+        setMessages([...updatedMessages, errorMessage]);
+      }
     } catch (error) {
       console.error('Error sending message:', error);
+      
+      // Handle network error
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        type: 'ai',
+        content: 'Sorry, I encountered a network error. Please check your connection and try again.',
+        timestamp: new Date(),
+      };
+
+      setMessages([...updatedMessages, errorMessage]);
+    } finally {
       setIsLoading(false);
     }
   };
 
-  const generateAIResponse = (userMessage: string, files: File[]): string => {
-    // This is a mock response - replace with actual Gemini API integration
-    const responses = [
-      "I'd be happy to help you with that! Based on your message, here are some suggestions for improving your notes...",
-      "Great question! Let me analyze your document and provide some insights...",
-      "I can help you refine and organize your notes. Here's what I recommend...",
-      "Thanks for sharing that with me. I can help you generate comprehensive notes from this content...",
-      "I see you've uploaded some files. Let me process them and provide you with structured notes...",
-    ];
 
-    if (files.length > 0) {
-      return `I've received your ${files.length} file(s). Let me analyze the content and help you create comprehensive notes. Based on the files you've shared, I can help you:\n\n• Extract key information and concepts\n• Create structured summaries\n• Generate study guides\n• Organize the content for better understanding\n\nWould you like me to focus on any specific aspect of the content?`;
-    }
-
-    return responses[Math.floor(Math.random() * responses.length)];
-  };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
@@ -247,9 +280,52 @@ export default function GinieHelp() {
                   <div className="text-center w-full">
                     <h1 className="text-4xl font-bold text-white mb-4">Welcome to Note Ginie</h1>
                     <p className="text-xl text-gray-400 mb-2">What do you want to explore today?</p>
-                    <p className="text-lg text-gray-500">
+                    <p className="text-lg text-gray-500 mb-6">
                       I can help you <span className="italic text-gray-400">summarise, code, create images</span> & more.
                     </p>
+                    
+                    {!apiKeyConfigured && (
+                      <div className="bg-yellow-900/30 border border-yellow-700/50 rounded-lg p-4 max-w-md mx-auto">
+                        <p className="text-yellow-300 text-sm">
+                          ⚠️ AI features require a Gemini API key. Please check the README for setup instructions.
+                        </p>
+                      </div>
+                    )}
+                    
+                    {/* Conversation Starters */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto mt-8">
+                      <button
+                        onClick={() => setMessage("Can you help me create a study schedule for my upcoming exams?")}
+                        className="p-4 bg-gray-800/50 border border-gray-700 rounded-lg hover:bg-gray-800 transition-colors text-left"
+                      >
+                        <h3 className="font-medium text-white mb-1">📅 Study Planning</h3>
+                        <p className="text-sm text-gray-400">Create effective study schedules and time management strategies</p>
+                      </button>
+                      
+                      <button
+                        onClick={() => setMessage("I need help understanding calculus concepts. Can you explain derivatives?")}
+                        className="p-4 bg-gray-800/50 border border-gray-700 rounded-lg hover:bg-gray-800 transition-colors text-left"
+                      >
+                        <h3 className="font-medium text-white mb-1">📚 Subject Help</h3>
+                        <p className="text-sm text-gray-400">Get explanations for complex topics and concepts</p>
+                      </button>
+                      
+                      <button
+                        onClick={() => setMessage("How can I improve my note-taking skills?")}
+                        className="p-4 bg-gray-800/50 border border-gray-700 rounded-lg hover:bg-gray-800 transition-colors text-left"
+                      >
+                        <h3 className="font-medium text-white mb-1">📝 Note Taking</h3>
+                        <p className="text-sm text-gray-400">Learn effective note-taking methods and organization</p>
+                      </button>
+                      
+                      <button
+                        onClick={() => setMessage("Can you help me analyze this document and create a summary?")}
+                        className="p-4 bg-gray-800/50 border border-gray-700 rounded-lg hover:bg-gray-800 transition-colors text-left"
+                      >
+                        <h3 className="font-medium text-white mb-1">📄 Document Analysis</h3>
+                        <p className="text-sm text-gray-400">Upload files for AI-powered analysis and summaries</p>
+                      </button>
+                    </div>
                   </div>
                 </div>
               ) : (

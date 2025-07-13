@@ -37,6 +37,8 @@ import {
   FileText,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useAuth } from '@/hooks/use-auth';
+import { addNote } from '@/lib/firebase-db';
 
 // Menu items configuration (same as DashboardLayout)
 const menuItems = [
@@ -100,28 +102,28 @@ export default function UploadNotes() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const pathname = usePathname();
+  const { user } = useAuth();
 
-  const handleCreateNote = () => {
-    if (!newNote.title.trim() || !newNote.content.trim()) return;
+  const handleCreateNote = async () => {
+    if (!newNote.title.trim() || !newNote.content.trim() || !user) return;
 
-    const note: Note = {
-      id: Date.now().toString(),
+    // Prepare note data
+    const noteData = {
       title: newNote.title,
       content: newNote.content,
       subject: newNote.subject,
       tags: newNote.tags,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      isPublished: false,
-      attachments: attachments.map(file => ({
-        type: file.type.startsWith('image/') ? 'image' : 'file',
-        name: file.name,
-        url: URL.createObjectURL(file),
-        size: file.size,
-      })),
+      isPublic: true, // Always public for community
+      fileUrl: undefined, // You can add file upload logic here
+      fileType: undefined,
+      fileSize: undefined,
+      bookId: undefined,
     };
 
-    setNotes([note, ...notes]);
+    // Upload to Firestore
+    await addNote(user.uid, noteData);
+
+    // Optionally, update local state or show a success message
     setNewNote({ title: '', content: '', subject: '', tags: [] });
     setAttachments([]);
     setActiveTab('my-notes');

@@ -1,24 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NoteGenie - AI-Powered Study Assistant
+
+NoteGenie is an intelligent study assistant that helps students organize notes, search books, and interact with AI for academic support.
+
+## Features
+
+- 📚 **Book Search & Library Management** - Search and organize your academic books
+- 📝 **Note Upload & Organization** - Upload and manage your study materials
+- 🤖 **AI-Powered Help** - Get assistance from Gemini AI for your studies
+- 👥 **Community Notes** - Share and discover notes from other students
+- 🎨 **Modern UI** - Beautiful, responsive interface with dark theme
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+1. **Node.js** (v18 or higher)
+2. **Gemini API Key** (free from Google)
+
+### Setup
+
+1. **Clone and install dependencies:**
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Set up environment variables:**
+```bash
+cp env.example .env.local
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. **Get your free Gemini API key:**
+   - Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
+   - Create a new API key
+   - Add it to your `.env.local` file:
+   ```
+   GEMINI_API_KEY=your_actual_api_key_here
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. **Run the development server:**
+```bash
+npm run dev
+```
+
+5. **Open your browser:**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+## AI Features
+
+The **Ginie Help** page now features real AI integration with Google's Gemini:
+
+- 💬 **Real-time Chat** - Ask questions and get instant responses
+- 📄 **Document Analysis** - Upload files for AI analysis
+- 🧠 **Contextual Responses** - AI remembers conversation history
+- 🎯 **Study-Focused** - Specialized in academic assistance
 
 ## Learn More
 

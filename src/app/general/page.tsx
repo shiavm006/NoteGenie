@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { BookOpen, FileText, Settings, User, Calendar, Trophy, ArrowRight, Plus, Search, X } from "lucide-react";
+import { BookOpen, FileText, Settings, Calendar, ArrowRight, Plus, Search, X } from "lucide-react";
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { libraryStorage, LibraryBook } from '@/lib/utils';

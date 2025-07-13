@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { IconBrandGoogle } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/use-auth";
+import { createUserProfile } from "@/lib/firebase-db";
 
 export default function AuthFormDemo() {
   const [isLogin, setIsLogin] = useState(true);
@@ -16,12 +18,55 @@ export default function AuthFormDemo() {
     email: "",
     password: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
+  const { signIn, signUp, signInWithGoogle } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Redirect to dashboard after form submission
-    router.push("/dashboard");
+    setIsLoading(true);
+    setError("");
+
+    try {
+      let result;
+      
+      if (isLogin) {
+        result = await signIn(formData.email, formData.password);
+      } else {
+        result = await signUp(formData.email, formData.password);
+        
+        // Create user profile for new users
+        if (result.success && result.user) {
+          await createUserProfile({
+            uid: result.user.uid,
+            email: result.user.email || "",
+            displayName: `${formData.firstName} ${formData.lastName}`.trim() || result.user.displayName || "User",
+            photoURL: result.user.photoURL || undefined,
+            preferences: {
+              theme: 'dark',
+              notifications: true,
+              privacy: 'private',
+            },
+            statistics: {
+              totalBooks: 0,
+              totalNotes: 0,
+              readingTime: 0,
+            },
+          });
+        }
+      }
+
+      if (result.success) {
+        router.push("/dashboard");
+      } else {
+        setError(result.error || "Authentication failed");
+      }
+    } catch (error) {
+      setError("An unexpected error occurred");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,6 +78,7 @@ export default function AuthFormDemo() {
 
   const toggleMode = () => {
     setIsLogin(!isLogin);
+    setError("");
     // Reset form when switching modes
     setFormData({
       firstName: "",
@@ -40,6 +86,43 @@ export default function AuthFormDemo() {
       email: "",
       password: "",
     });
+  };
+
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const result = await signInWithGoogle();
+      
+      if (result.success && result.user) {
+        // Create user profile for Google sign-in
+        await createUserProfile({
+          uid: result.user.uid,
+          email: result.user.email || "",
+          displayName: result.user.displayName || "User",
+          photoURL: result.user.photoURL || undefined,
+          preferences: {
+            theme: 'dark',
+            notifications: true,
+            privacy: 'private',
+          },
+          statistics: {
+            totalBooks: 0,
+            totalNotes: 0,
+            readingTime: 0,
+          },
+        });
+        
+        router.push("/dashboard");
+      } else {
+        setError(result.error || "Google sign-in failed");
+      }
+    } catch (error) {
+      setError("An unexpected error occurred");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -54,6 +137,12 @@ export default function AuthFormDemo() {
             : "Join Note Ginie to get started"}
         </p>
       </div>
+
+      {error && (
+        <div className="bg-red-900/30 border border-red-700/50 text-red-300 px-4 py-3 rounded-lg mb-4">
+          {error}
+        </div>
+      )}
 
       <form className="space-y-6" onSubmit={handleSubmit}>
         {!isLogin && (
@@ -113,22 +202,25 @@ export default function AuthFormDemo() {
         </LabelInputContainer>
 
         <button
-          className="relative group/btn bg-blue-600 hover:bg-gray-800 block w-full text-white rounded-md h-12 font-medium shadow-lg transition-all duration-200"
+          className="relative group/btn bg-blue-600 hover:bg-gray-800 block w-full text-white rounded-md h-12 font-medium shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           type="submit"
+          disabled={isLoading}
         >
-          {isLogin ? "Sign In" : "Sign Up"}
+          {isLoading ? "Loading..." : (isLogin ? "Sign In" : "Sign Up")}
           <BottomGradient />
         </button>
 
         <div className="bg-gradient-to-r from-transparent via-gray-700 to-transparent my-8 h-[1px] w-full" />
 
         <button
-          className="relative group/btn flex space-x-2 items-center justify-center px-4 w-full text-black rounded-md h-12 font-medium shadow-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+          className="relative group/btn flex space-x-2 items-center justify-center px-4 w-full text-black rounded-md h-12 font-medium shadow-lg bg-gray-50 hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           type="button"
+          onClick={handleGoogleSignIn}
+          disabled={isLoading}
         >
           <IconBrandGoogle className="h-4 w-4 text-neutral-800" />
           <span className="text-neutral-700 text-sm">
-            {isLogin ? "Sign in with Google" : "Sign up with Google"}
+            {isLoading ? "Loading..." : (isLogin ? "Sign in with Google" : "Sign up with Google")}
           </span>
           <BottomGradient />
         </button>
