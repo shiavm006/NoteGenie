@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   Sidebar,
   SidebarContent,
@@ -21,7 +22,7 @@ import {
   BookOpen,
   HelpCircle,
   Upload,
-  FileText,
+  Users,
   LogOut,
   Paperclip,
   Image,
@@ -29,10 +30,12 @@ import {
   Bot,
   User,
   Copy,
+  FileText,
 } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-// Menu items
-const items = [
+// Menu items configuration (same as DashboardLayout)
+const menuItems = [
   {
     title: "General",
     icon: Settings,
@@ -47,7 +50,6 @@ const items = [
     title: "Ginie Help",
     icon: HelpCircle,
     href: "/ginie-help",
-    active: true,
   },
   {
     title: "Upload Notes",
@@ -56,7 +58,7 @@ const items = [
   },
   {
     title: "Community Notes",
-    icon: FileText,
+    icon: Users,
     href: "/publish-notes",
   },
 ];
@@ -84,6 +86,7 @@ export default function GinieHelp() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const pathname = usePathname();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -174,15 +177,18 @@ export default function GinieHelp() {
   return (
     <SidebarProvider>
       <div className="flex h-screen flex-1 w-full min-w-0 bg-black text-white">
-        {/* Sidebar - Clean without search bar */}
+        {/* Sidebar - Same as DashboardLayout */}
         <Sidebar className="bg-black border-r border-gray-800">
           <SidebarHeader className="p-4 border-b border-gray-800">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-sm">A</span>
-              </div>
+              <Avatar className="w-8 h-8">
+                <AvatarImage src="https://github.com/shadcn.png" alt="Shivam Mittal" />
+                <AvatarFallback className="bg-blue-600 text-white font-bold text-sm">
+                  S
+                </AvatarFallback>
+              </Avatar>
               <div>
-                <p className="text-white font-medium text-sm">abhardw7@kent.edu</p>
+                <p className="text-white font-medium text-sm">Shivam Mittal</p>
                 <p className="text-gray-400 text-xs">Pro Plan</p>
               </div>
             </div>
@@ -192,19 +198,22 @@ export default function GinieHelp() {
             <SidebarGroup>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {items.map((item) => (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton 
-                        asChild
-                        className={`text-gray-400 hover:text-white hover:bg-gray-800 transition-all duration-200 w-full ${item.active ? 'bg-gray-800 text-white' : ''}`}
-                      >
-                        <Link href={item.href} className="flex items-center space-x-3 w-full px-3 py-2 rounded-md">
-                          <item.icon className="w-4 h-4" />
-                          <span className="font-normal text-sm">{item.title}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
+                  {menuItems.map((item) => {
+                    const isActive = pathname === item.href;
+                    return (
+                      <SidebarMenuItem key={item.title}>
+                        <SidebarMenuButton 
+                          asChild
+                          className={`text-gray-400 hover:text-white hover:bg-gray-800 transition-all duration-200 w-full ${isActive ? 'bg-gray-800 text-white' : ''}`}
+                        >
+                          <Link href={item.href} className="flex items-center space-x-3 w-full px-3 py-2 rounded-md">
+                            <item.icon className="w-4 h-4" />
+                            <span className="font-normal text-sm">{item.title}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
@@ -227,7 +236,7 @@ export default function GinieHelp() {
           </SidebarFooter>
         </Sidebar>
         
-        {/* Main Chat Area - Full width without black space */}
+        {/* Main Chat Area - Full width without padding */}
         <SidebarInset className="flex-1 bg-black">
           <div className="h-full flex flex-col">
             {/* Messages Container */}

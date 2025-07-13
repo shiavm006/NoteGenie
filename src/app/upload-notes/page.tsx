@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   Sidebar,
   SidebarContent,
@@ -23,7 +24,7 @@ import {
   BookOpen,
   HelpCircle,
   Upload,
-  FileText,
+  Users,
   LogOut,
   Plus,
   X,
@@ -33,10 +34,12 @@ import {
   Tag,
   Image as ImageIcon,
   Paperclip,
+  FileText,
 } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-// Menu items
-const items = [
+// Menu items configuration (same as DashboardLayout)
+const menuItems = [
   {
     title: "General",
     icon: Settings,
@@ -56,11 +59,10 @@ const items = [
     title: "Upload Notes",
     icon: Upload,
     href: "/upload-notes",
-    active: true,
   },
   {
     title: "Community Notes",
-    icon: FileText,
+    icon: Users,
     href: "/publish-notes",
   },
 ];
@@ -97,6 +99,7 @@ export default function UploadNotes() {
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
+  const pathname = usePathname();
 
   const handleCreateNote = () => {
     if (!newNote.title.trim() || !newNote.content.trim()) return;
@@ -194,14 +197,18 @@ export default function UploadNotes() {
   return (
     <SidebarProvider>
       <div className="flex h-screen flex-1 w-full min-w-0 bg-black text-white">
+        {/* Sidebar - Same as DashboardLayout */}
         <Sidebar className="bg-black border-r border-gray-800">
           <SidebarHeader className="p-4 border-b border-gray-800">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-sm">A</span>
-              </div>
+              <Avatar className="w-8 h-8">
+                <AvatarImage src="https://github.com/shadcn.png" alt="Shivam Mittal" />
+                <AvatarFallback className="bg-blue-600 text-white font-bold text-sm">
+                  S
+                </AvatarFallback>
+              </Avatar>
               <div>
-                <p className="text-white font-medium text-sm">abhardw7@kent.edu</p>
+                <p className="text-white font-medium text-sm">Shivam Mittal</p>
                 <p className="text-gray-400 text-xs">Pro Plan</p>
               </div>
             </div>
@@ -211,19 +218,22 @@ export default function UploadNotes() {
             <SidebarGroup>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {items.map((item) => (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton 
-                        asChild
-                        className={`text-gray-400 hover:text-white hover:bg-gray-800 transition-all duration-200 w-full ${item.active ? 'bg-gray-800 text-white' : ''}`}
-                      >
-                        <Link href={item.href} className="flex items-center space-x-3 w-full px-3 py-2 rounded-md">
-                          <item.icon className="w-4 h-4" />
-                          <span className="font-normal text-sm">{item.title}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
+                  {menuItems.map((item) => {
+                    const isActive = pathname === item.href;
+                    return (
+                      <SidebarMenuItem key={item.title}>
+                        <SidebarMenuButton 
+                          asChild
+                          className={`text-gray-400 hover:text-white hover:bg-gray-800 transition-all duration-200 w-full ${isActive ? 'bg-gray-800 text-white' : ''}`}
+                        >
+                          <Link href={item.href} className="flex items-center space-x-3 w-full px-3 py-2 rounded-md">
+                            <item.icon className="w-4 h-4" />
+                            <span className="font-normal text-sm">{item.title}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
@@ -246,6 +256,7 @@ export default function UploadNotes() {
           </SidebarFooter>
         </Sidebar>
         
+        {/* Main Content Area - Full width without padding */}
         <SidebarInset className="flex-1 w-full min-w-0 bg-black">
           <div className="h-full overflow-y-auto">
             <div className="min-h-full flex flex-col">
@@ -442,14 +453,14 @@ export default function UploadNotes() {
                               {newNote.tags.map((tag, index) => (
                                 <span key={index} className="px-3 py-1 bg-blue-600 text-white text-sm rounded-full flex items-center">
                                   {tag}
-                                                                     <button
-                                     onClick={() => handleRemoveTag(tag)}
-                                     className="ml-2 hover:text-red-300"
-                                     title="Remove tag"
-                                     aria-label={`Remove ${tag} tag`}
-                                   >
-                                     <X className="w-3 h-3" />
-                                   </button>
+                                  <button
+                                    onClick={() => handleRemoveTag(tag)}
+                                    className="ml-2 hover:text-red-300"
+                                    title="Remove tag"
+                                    aria-label={`Remove ${tag} tag`}
+                                  >
+                                    <X className="w-3 h-3" />
+                                  </button>
                                 </span>
                               ))}
                             </div>
