@@ -1,6 +1,8 @@
 import Link from "next/link";
 import GlobeDemo from "@/components/globe-demo";
 import { Spotlight } from "@/components/ui/spotlight-new";
+import InfiniteMovingCardsDemo from "@/components/infinite-moving-cards-demo";
+import { FeaturesSectionDemo } from "@/components/ui/features-section-demo";
 
 export default function Home() {
   return (
@@ -70,9 +72,35 @@ export default function Home() {
         </div>
       </main>
 
+      {/* Features Section */}
+      <section className="w-full relative z-10 py-20">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">
+            Powerful Features for Modern Learning
+          </h2>
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+            Everything you need to take your studies to the next level
+          </p>
+        </div>
+        <FeaturesSectionDemo />
+      </section>
+
       {/* Globe Section */}
       <section className="w-full relative z-10">
         <GlobeDemo />
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="w-full relative z-10 py-20">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">
+            What Our Users Say
+          </h2>
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+            Discover how Note Ginie is transforming the way people learn and organize their knowledge.
+          </p>
+        </div>
+        <InfiniteMovingCardsDemo />
       </section>
     </div>
   );

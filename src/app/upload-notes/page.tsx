@@ -221,17 +221,17 @@ export default function UploadNotes() {
                   {menuItems.map((item) => {
                     const isActive = pathname === item.href;
                     return (
-                      <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton 
-                          asChild
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton 
+                        asChild
                           className={`text-gray-400 hover:text-white hover:bg-gray-800 transition-all duration-200 w-full ${isActive ? 'bg-gray-800 text-white' : ''}`}
                         >
                           <Link href={item.href} className="flex items-center space-x-3 w-full px-3 py-2 rounded-md">
                             <item.icon className="w-4 h-4" />
                             <span className="font-normal text-sm">{item.title}</span>
                           </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
                     );
                   })}
                 </SidebarMenu>
