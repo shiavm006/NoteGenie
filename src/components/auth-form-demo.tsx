@@ -113,7 +113,7 @@ export default function AuthFormDemo() {
         </LabelInputContainer>
 
         <button
-          className="bg-gradient-to-br relative group/btn from-green-500 to-blue-600 block w-full text-white rounded-md h-12 font-medium shadow-lg hover:shadow-xl transition-all duration-200"
+          className="relative group/btn bg-blue-600 hover:bg-gray-800 block w-full text-white rounded-md h-12 font-medium shadow-lg transition-all duration-200"
           type="submit"
         >
           {isLogin ? "Sign In" : "Sign Up"}

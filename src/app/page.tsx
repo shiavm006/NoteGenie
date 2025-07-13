@@ -3,6 +3,7 @@ import GlobeDemo from "@/components/globe-demo";
 import { Spotlight } from "@/components/ui/spotlight-new";
 import InfiniteMovingCardsDemo from "@/components/infinite-moving-cards-demo";
 import { FeaturesSectionDemo } from "@/components/ui/features-section-demo";
+import Footer from "@/components/layout/footer";
 
 export default function Home() {
   return (
@@ -31,7 +32,7 @@ export default function Home() {
           {/* Get the app button - Now links to auth page */}
           <Link
             href="/auth"
-            className="bg-white text-black px-5 py-2.5 rounded-xl font-medium hover:bg-gray-800 hover:text-white transition-colors text-sm border border-white"
+            className="bg-gray-700 text-white px-5 py-2.5 rounded-xl font-medium hover:bg-gray-800 transition-colors text-sm border border-gray-700"
           >
             Login/Signup
           </Link>
@@ -58,7 +59,7 @@ export default function Home() {
           {/* CTA Button - Refined sizing */}
           <Link
             href="/auth"
-            className="inline-block bg-white text-black px-7 py-3 rounded-xl text-base font-medium hover:bg-gray-800 hover:text-white transition-colors"
+            className="inline-block bg-gray-700 text-white px-7 py-3 rounded-xl text-base font-medium hover:bg-gray-800 transition-colors"
           >
             Join Now
           </Link>
@@ -73,9 +74,9 @@ export default function Home() {
       </main>
 
       {/* Features Section */}
-      <section className="w-full relative z-10 py-20">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">
+      <section className="w-full relative z-10 py-12">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-white mb-4">
             Powerful Features for Modern Learning
           </h2>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
@@ -86,22 +87,30 @@ export default function Home() {
       </section>
 
       {/* Globe Section */}
-      <section className="w-full relative z-10">
+      <section className="w-full relative z-10 py-12">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-white mb-4">
+            Explore the World of Notes
+          </h2>
+        </div>
         <GlobeDemo />
       </section>
 
       {/* Testimonials Section */}
-      <section className="w-full relative z-10 py-20">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">
+      <section className="w-full relative z-10 py-12">
+        <div className="text-center mb-4">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-white mb-2">
             What Our Users Say
           </h2>
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-0">
             Discover how Note Ginie is transforming the way people learn and organize their knowledge.
           </p>
         </div>
         <InfiniteMovingCardsDemo />
       </section>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
