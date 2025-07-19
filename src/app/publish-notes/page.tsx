@@ -368,9 +368,41 @@ export default function CommunityNotes() {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
   useEffect(() => {
-    // Use mock data instead of Firestore for now
-    setNotes(mockNotes);
-    setFilteredNotes(mockNotes);
+    // Combine mock data with real Firestore data
+    const loadNotes = async () => {
+      try {
+        // Get real notes from Firestore
+        const realNotes = await getPublicNotes();
+        
+        // Combine mock data with real notes, avoiding duplicates by ID
+        const allNotes = [...mockNotes];
+        
+        // Add real notes that aren't already in mock data
+        realNotes.forEach(realNote => {
+          const exists = allNotes.find(note => note.id === realNote.id);
+          if (!exists) {
+            allNotes.push(realNote);
+          }
+        });
+        
+        setNotes(allNotes);
+        setFilteredNotes(allNotes);
+      } catch (error) {
+        console.error('Error loading notes:', error);
+        // Fallback to mock data only if Firestore fails
+        setNotes(mockNotes);
+        setFilteredNotes(mockNotes);
+      }
+    };
+    
+    loadNotes();
+    
+    // Set up real-time listener for new notes (refresh every 30 seconds)
+    const interval = setInterval(() => {
+      loadNotes();
+    }, 30000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   const subjects = ['all', ...Array.from(new Set(notes.map(note => note.subject)))];
