@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   Sidebar,
   SidebarContent,
@@ -89,6 +89,7 @@ export default function GinieHelp() {
   const imageInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const pathname = usePathname();
+  const router = useRouter();
   const { user, logout } = useAuth();
 
   // Get user initials for avatar fallback
@@ -104,7 +105,13 @@ export default function GinieHelp() {
   };
 
   const handleLogout = async () => {
-    await logout();
+    try {
+      await logout();
+      // Redirect to auth page after successful logout
+      router.push('/auth');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   const scrollToBottom = () => {

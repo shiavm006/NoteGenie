@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 import {
   Sidebar,
@@ -62,6 +62,7 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, logout } = useAuth();
 
   // Get user initials for avatar fallback
@@ -77,7 +78,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   };
 
   const handleLogout = async () => {
-    await logout();
+    try {
+      await logout();
+      // Redirect to auth page after successful logout
+      router.push('/auth');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   return (
