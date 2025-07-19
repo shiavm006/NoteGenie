@@ -48,7 +48,9 @@ export default function SearchBooks() {
   const loadRandomBooks = async () => {
     setIsLoadingRandom(true);
     try {
-      const randomTerm = randomSearchTerms[Math.floor(Math.random() * randomSearchTerms.length)];
+      // Use a more stable approach for random selection
+      const randomIndex = Math.floor((Date.now() % 1000) / 1000 * randomSearchTerms.length);
+      const randomTerm = randomSearchTerms[randomIndex];
       const response = await fetch(
         `https://www.googleapis.com/books/v1/volumes?q=${randomTerm}&maxResults=12&orderBy=relevance`
       );

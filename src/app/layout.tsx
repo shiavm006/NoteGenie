@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Jamie - The AI note taker. Without a bot.",
+  title: "NoteGenie",
   description: "Every meeting, captured. Every decision, actionable. Everywhere, seamless.",
 };
 

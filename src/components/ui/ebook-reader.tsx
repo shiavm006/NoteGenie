@@ -33,15 +33,15 @@ export default function EbookReader({ book, isOpen, onClose }: EbookReaderProps)
 
   useEffect(() => {
     if (isOpen) {
+      // Use a more React-friendly approach to prevent body scroll
+      const originalStyle = window.getComputedStyle(document.body).overflow;
       document.body.style.overflow = 'hidden';
       loadBookPreview();
-    } else {
-      document.body.style.overflow = 'auto';
+      
+      return () => {
+        document.body.style.overflow = originalStyle;
+      };
     }
-
-    return () => {
-      document.body.style.overflow = 'auto';
-    };
   }, [isOpen, book.id]);
 
   useEffect(() => {

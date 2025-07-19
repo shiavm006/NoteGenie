@@ -44,9 +44,13 @@ export default function ExpandableBookCard({ books, onAddToLibrary }: Expandable
     }
 
     if (active && typeof active === "object") {
+      // Use a more React-friendly approach to prevent body scroll
+      const originalStyle = window.getComputedStyle(document.body).overflow;
       document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
+      
+      return () => {
+        document.body.style.overflow = originalStyle;
+      };
     }
 
     window.addEventListener("keydown", onKeyDown);
