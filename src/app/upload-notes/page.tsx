@@ -118,6 +118,15 @@ export default function UploadNotes() {
       fileType: undefined,
       fileSize: undefined,
       bookId: undefined,
+      attachments: attachments.map(file => ({
+        name: file.name,
+        size: file.size,
+        url: URL.createObjectURL(file)
+      })),
+      author: {
+        name: user?.displayName || 'Anonymous',
+        avatar: user?.email?.split('@')[0] || 'user'
+      }
     };
 
     // Upload to Firestore

@@ -32,12 +32,25 @@ export interface UserNote {
   userId: string;
   title: string;
   content: string;
+  subject: string;
   fileUrl?: string;
   fileType?: string;
   fileSize?: number;
   bookId?: string;
   tags: string[];
   isPublic: boolean;
+  author: {
+    name: string;
+    avatar: string;
+  };
+  views: number;
+  likes: number;
+  rating: number;
+  attachments: Array<{
+    name: string;
+    size: number;
+    url: string;
+  }>;
   createdAt: any; // Firestore timestamp
   updatedAt: any; // Firestore timestamp
 }
@@ -135,11 +148,19 @@ export const updateBookProgress = async (
 export const notesCollection = (userId: string) => 
   collection(db, 'users', userId, 'notes');
 
-export const addNote = async (userId: string, note: Omit<UserNote, 'id' | 'userId' | 'createdAt' | 'updatedAt'>): Promise<string | null> => {
+export const addNote = async (userId: string, note: Omit<UserNote, 'id' | 'userId' | 'createdAt' | 'updatedAt' | 'views' | 'likes' | 'rating' | 'author'> & { author?: { name: string; avatar: string } }): Promise<string | null> => {
   try {
     const noteData: Omit<UserNote, 'id'> = {
       ...note,
       userId,
+      views: 0,
+      likes: 0,
+      rating: 0,
+      author: {
+        name: note.author?.name || 'Anonymous',
+        avatar: note.author?.avatar || 'user'
+      },
+      attachments: note.attachments || [],
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     };
@@ -194,17 +215,41 @@ export const getUserNotes = async (userId: string): Promise<UserNote[]> => {
 
 export const getPublicNotes = async (): Promise<UserNote[]> => {
   try {
-    const q = query(
-      collection(db, 'users'),
-      where('isPublic', '==', true),
-      orderBy('createdAt', 'desc')
-    );
-    const querySnapshot = await getDocs(q);
+    // Get all users first
+    const usersSnapshot = await getDocs(collection(db, 'users'));
+    const allNotes: UserNote[] = [];
     
-    return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })) as UserNote[];
+    // For each user, get their public notes
+    for (const userDoc of usersSnapshot.docs) {
+      const userId = userDoc.id;
+      const notesQuery = query(
+        notesCollection(userId),
+        where('isPublic', '==', true),
+        orderBy('createdAt', 'desc')
+      );
+      
+      try {
+        const notesSnapshot = await getDocs(notesQuery);
+        const userNotes = notesSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        })) as UserNote[];
+        
+        allNotes.push(...userNotes);
+      } catch (error) {
+        console.error(`Error getting notes for user ${userId}:`, error);
+        // Continue with other users even if one fails
+      }
+    }
+    
+    // Sort all notes by creation date
+    allNotes.sort((a, b) => {
+      const aTime = a.createdAt?.toDate?.() || a.createdAt;
+      const bTime = b.createdAt?.toDate?.() || b.createdAt;
+      return bTime - aTime;
+    });
+    
+    return allNotes;
   } catch (error) {
     console.error('Error getting public notes:', error);
     return [];
