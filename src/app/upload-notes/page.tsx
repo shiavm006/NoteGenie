@@ -102,7 +102,23 @@ export default function UploadNotes() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const pathname = usePathname();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+
+  // Get user initials for avatar fallback
+  const getUserInitials = (displayName: string | null | undefined) => {
+    if (!displayName) return 'U';
+    return displayName.split(' ').map(name => name[0]).join('').toUpperCase().slice(0, 2);
+  };
+
+  // Get user display name
+  const getUserDisplayName = () => {
+    if (!user) return 'Guest';
+    return user.displayName || user.email?.split('@')[0] || 'User';
+  };
+
+  const handleLogout = async () => {
+    await logout();
+  };
 
   const handleCreateNote = async () => {
     if (!newNote.title.trim() || !newNote.content.trim() || !user) return;
@@ -213,13 +229,13 @@ export default function UploadNotes() {
           <SidebarHeader className="p-4 border-b border-gray-800">
             <div className="flex items-center space-x-3">
               <Avatar className="w-8 h-8">
-                <AvatarImage src="https://github.com/shadcn.png" alt="Shivam Mittal" />
+                <AvatarImage src={user?.photoURL || undefined} alt={getUserDisplayName()} />
                 <AvatarFallback className="bg-blue-600 text-white font-bold text-sm">
-                  S
+                  {getUserInitials(user?.displayName)}
                 </AvatarFallback>
               </Avatar>
               <div>
-                <p className="text-white font-medium text-sm">Shivam Mittal</p>
+                <p className="text-white font-medium text-sm">{getUserDisplayName()}</p>
                 <p className="text-gray-400 text-xs">Pro Plan</p>
               </div>
             </div>
@@ -254,13 +270,11 @@ export default function UploadNotes() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton 
-                  asChild
-                  className="text-gray-400 hover:text-white hover:bg-red-800 transition-all duration-200"
+                  onClick={handleLogout}
+                  className="text-gray-400 hover:text-white hover:bg-red-800 transition-all duration-200 w-full px-3 py-2 rounded-md"
                 >
-                  <Link href="/auth" className="flex items-center space-x-3 w-full px-3 py-2 rounded-md">
-                    <LogOut className="w-4 h-4" />
-                    <span className="font-normal text-sm">Log Out</span>
-                  </Link>
+                  <LogOut className="w-4 h-4" />
+                  <span className="font-normal text-sm">Log Out</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
