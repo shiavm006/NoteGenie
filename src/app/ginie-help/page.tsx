@@ -33,8 +33,6 @@ import {
   FileText,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useAuth } from '@/hooks/use-auth';
-import ClientOnly from '@/components/ui/client-only';
 
 // Menu items configuration (same as DashboardLayout)
 const menuItems = [
@@ -90,7 +88,6 @@ export default function GinieHelp() {
   const imageInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const pathname = usePathname();
-  const { user } = useAuth();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -104,7 +101,7 @@ export default function GinieHelp() {
     if (!message.trim() && attachments.length === 0) return;
 
     const userMessage: Message = {
-      id: `user-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      id: Date.now().toString(),
       type: 'user',
       content: message,
       timestamp: new Date(),
@@ -144,7 +141,7 @@ export default function GinieHelp() {
 
       if (data.success) {
         const aiMessage: Message = {
-          id: `ai-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+          id: (Date.now() + 1).toString(),
           type: 'ai',
           content: data.response,
           timestamp: new Date(),
@@ -163,7 +160,7 @@ export default function GinieHelp() {
         }
 
         const errorMessage: Message = {
-          id: `error-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+          id: (Date.now() + 1).toString(),
           type: 'ai',
           content: errorContent,
           timestamp: new Date(),
@@ -176,7 +173,7 @@ export default function GinieHelp() {
       
       // Handle network error
       const errorMessage: Message = {
-        id: `network-error-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+        id: (Date.now() + 1).toString(),
         type: 'ai',
         content: 'Sorry, I encountered a network error. Please check your connection and try again.',
         timestamp: new Date(),
@@ -217,31 +214,16 @@ export default function GinieHelp() {
         <Sidebar className="bg-black border-r border-gray-800">
           <SidebarHeader className="p-4 border-b border-gray-800">
             <div className="flex items-center space-x-3">
-              <ClientOnly fallback={
-                <Avatar className="w-8 h-8">
-                  <AvatarFallback className="bg-blue-600 text-white font-bold text-sm">
-                    U
-                  </AvatarFallback>
-                </Avatar>
-              }>
-                <Avatar className="w-8 h-8">
-                  <AvatarImage src={user?.photoURL || undefined} alt={user?.displayName || 'User'} />
-                  <AvatarFallback className="bg-blue-600 text-white font-bold text-sm">
-                    {user?.displayName?.split(' ').map(name => name[0]).join('').toUpperCase().slice(0, 2) || 'U'}
-                  </AvatarFallback>
-                </Avatar>
-              </ClientOnly>
-              <ClientOnly fallback={
-                <div>
-                  <p className="text-white font-medium text-sm">User</p>
-                  <p className="text-gray-400 text-xs">Pro Plan</p>
-                </div>
-              }>
-                <div>
-                  <p className="text-white font-medium text-sm">{user?.displayName || 'User'}</p>
-                  <p className="text-gray-400 text-xs">Pro Plan</p>
-                </div>
-              </ClientOnly>
+              <Avatar className="w-8 h-8">
+                <AvatarImage src="https://github.com/shadcn.png" alt="Shivam Mittal" />
+                <AvatarFallback className="bg-blue-600 text-white font-bold text-sm">
+                  S
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-white font-medium text-sm">Shivam Mittal</p>
+                <p className="text-gray-400 text-xs">Pro Plan</p>
+              </div>
             </div>
           </SidebarHeader>
           

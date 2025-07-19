@@ -6,8 +6,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { libraryStorage, LibraryBook } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import EbookReader from '@/components/ui/ebook-reader';
-import { useAuth } from '@/hooks/use-auth';
-import ClientOnly from '@/components/ui/client-only';
 
 export default function General() {
   const [libraryBooks, setLibraryBooks] = useState<LibraryBook[]>([]);
@@ -19,7 +17,6 @@ export default function General() {
   });
   const [readerBook, setReaderBook] = useState<LibraryBook | null>(null);
   const [isReaderOpen, setIsReaderOpen] = useState(false);
-  const { user } = useAuth();
 
   useEffect(() => {
     // Load library books
@@ -64,9 +61,7 @@ export default function General() {
       {/* Minimalist Header */}
       <div className="mb-12">
         <h1 className="text-3xl font-light text-white mb-2">Dashboard</h1>
-        <ClientOnly fallback={<p className="text-gray-400">Welcome back, User</p>}>
-          <p className="text-gray-400">Welcome back, {user?.displayName || 'User'}</p>
-        </ClientOnly>
+        <p className="text-gray-400">Welcome back, Shivam</p>
       </div>
 
       {/* Stats Grid - Simplified */}
@@ -203,32 +198,18 @@ export default function General() {
             <h2 className="text-xl font-light text-white mb-6">Profile</h2>
             <div className="border border-gray-800 rounded-lg p-6">
               
-              <ClientOnly fallback={
-                <div className="flex items-center space-x-4 mb-6">
-                  <Avatar className="w-12 h-12">
-                    <AvatarFallback className="bg-gray-800 text-white font-medium">
-                      U
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h3 className="text-white font-medium">User</h3>
-                    <p className="text-blue-400 text-sm">Pro Plan</p>
-                  </div>
+              <div className="flex items-center space-x-4 mb-6">
+                <Avatar className="w-12 h-12">
+                  <AvatarImage src="https://github.com/shadcn.png" alt="Shivam Mittal" />
+                  <AvatarFallback className="bg-gray-800 text-white font-medium">
+                    S
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <h3 className="text-white font-medium">Shivam Mittal</h3>
+                  <p className="text-blue-400 text-sm">Pro Plan</p>
                 </div>
-              }>
-                <div className="flex items-center space-x-4 mb-6">
-                  <Avatar className="w-12 h-12">
-                    <AvatarImage src={user?.photoURL || undefined} alt={user?.displayName || 'User'} />
-                    <AvatarFallback className="bg-gray-800 text-white font-medium">
-                      {user?.displayName?.split(' ').map(name => name[0]).join('').toUpperCase().slice(0, 2) || 'U'}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h3 className="text-white font-medium">{user?.displayName || 'User'}</h3>
-                    <p className="text-blue-400 text-sm">Pro Plan</p>
-                  </div>
-                </div>
-              </ClientOnly>
+              </div>
               
               <div className="space-y-3 text-sm">
                 <div className="flex items-center justify-between">

@@ -25,8 +25,6 @@ import {
   Users,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useAuth } from '@/hooks/use-auth';
-import ClientOnly from '@/components/ui/client-only';
 
 // Menu items configuration
 const menuItems = [
@@ -63,45 +61,24 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = usePathname();
-  const { user } = useAuth();
-
-  // Get user initials for avatar fallback
-  const getUserInitials = (displayName: string | null | undefined) => {
-    if (!displayName) return 'U';
-    return displayName.split(' ').map(name => name[0]).join('').toUpperCase().slice(0, 2);
-  };
 
   return (
     <SidebarProvider>
       <div className="flex h-screen bg-black text-white">
         <Sidebar className="bg-black border-r border-gray-800">
           <SidebarHeader className="p-4 border-b border-gray-800">
-            <ClientOnly fallback={
-              <div className="flex items-center space-x-3">
-                <Avatar className="w-8 h-8">
-                  <AvatarFallback className="bg-blue-600 text-white font-bold text-sm">
-                    U
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="text-white font-medium text-sm">User</p>
-                  <p className="text-gray-400 text-xs">Pro Plan</p>
-                </div>
+            <div className="flex items-center space-x-3">
+              <Avatar className="w-8 h-8">
+                <AvatarImage src="https://github.com/shadcn.png" alt="Shivam Mittal" />
+                <AvatarFallback className="bg-blue-600 text-white font-bold text-sm">
+                  S
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-white font-medium text-sm">Shivam Mittal</p>
+                <p className="text-gray-400 text-xs">Pro Plan</p>
               </div>
-            }>
-              <div className="flex items-center space-x-3">
-                <Avatar className="w-8 h-8">
-                  <AvatarImage src={user?.photoURL || undefined} alt={user?.displayName || 'User'} />
-                  <AvatarFallback className="bg-blue-600 text-white font-bold text-sm">
-                    {getUserInitials(user?.displayName)}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="text-white font-medium text-sm">{user?.displayName || 'User'}</p>
-                  <p className="text-gray-400 text-xs">Pro Plan</p>
-                </div>
-              </div>
-            </ClientOnly>
+            </div>
           </SidebarHeader>
           
           <SidebarContent className="px-4 py-4">
