@@ -10,7 +10,8 @@ import {
   where, 
   orderBy,
   onSnapshot,
-  serverTimestamp 
+  serverTimestamp,
+  setDoc
 } from 'firebase/firestore';
 import { db } from './firebase';
 import { LibraryBook } from './utils';
@@ -194,17 +195,42 @@ export const getUserNotes = async (userId: string): Promise<UserNote[]> => {
 
 export const getPublicNotes = async (): Promise<UserNote[]> => {
   try {
-    const q = query(
-      collection(db, 'users'),
-      where('isPublic', '==', true),
-      orderBy('createdAt', 'desc')
-    );
-    const querySnapshot = await getDocs(q);
+    // Since notes are stored in subcollections, we need to query all users first
+    // and then get their public notes. This is a limitation of Firestore.
+    const usersQuery = query(collection(db, 'users'));
+    const usersSnapshot = await getDocs(usersQuery);
     
-    return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })) as UserNote[];
+    const allPublicNotes: UserNote[] = [];
+    
+    // For each user, get their public notes
+    for (const userDoc of usersSnapshot.docs) {
+      const userId = userDoc.id;
+      const notesQuery = query(
+        collection(db, 'users', userId, 'notes'),
+        where('isPublic', '==', true),
+        orderBy('createdAt', 'desc')
+      );
+      
+      try {
+        const notesSnapshot = await getDocs(notesQuery);
+        const userNotes = notesSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        })) as UserNote[];
+        
+        allPublicNotes.push(...userNotes);
+      } catch (error) {
+        // Skip users with no notes or permission issues
+        console.warn(`Could not fetch notes for user ${userId}:`, error);
+      }
+    }
+    
+    // Sort by creation date (newest first)
+    return allPublicNotes.sort((a, b) => {
+      const aTime = a.createdAt?.toMillis?.() || 0;
+      const bTime = b.createdAt?.toMillis?.() || 0;
+      return bTime - aTime;
+    });
   } catch (error) {
     console.error('Error getting public notes:', error);
     return [];
@@ -215,11 +241,11 @@ export const getPublicNotes = async (): Promise<UserNote[]> => {
 export const createUserProfile = async (userData: Omit<UserProfile, 'createdAt' | 'lastLogin'>): Promise<boolean> => {
   try {
     const userDoc = doc(db, 'users', userData.uid);
-    await updateDoc(userDoc, {
+    await setDoc(userDoc, {
       ...userData,
       createdAt: serverTimestamp(),
       lastLogin: serverTimestamp(),
-    });
+    }, { merge: true });
     return true;
   } catch (error) {
     console.error('Error creating user profile:', error);
@@ -230,10 +256,10 @@ export const createUserProfile = async (userData: Omit<UserProfile, 'createdAt' 
 export const updateUserProfile = async (uid: string, updates: Partial<UserProfile>): Promise<boolean> => {
   try {
     const userDoc = doc(db, 'users', uid);
-    await updateDoc(userDoc, {
+    await setDoc(userDoc, {
       ...updates,
       lastLogin: serverTimestamp(),
-    });
+    }, { merge: true });
     return true;
   } catch (error) {
     console.error('Error updating user profile:', error);

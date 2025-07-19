@@ -214,8 +214,8 @@ export function Globe({ globeConfig, data }: WorldProps) {
     const interval = setInterval(() => {
       if (!globeRef.current) return;
 
-      // Use deterministic selection based on timestamp cycles
-      const cyclePosition = Math.floor(Date.now() / 2000) % data.length;
+      // Use deterministic selection based on animation cycles
+      const cyclePosition = Math.floor((performance.now() || 0) / 2000) % data.length;
       const selectionCount = Math.floor((data.length * 4) / 5);
       
       const selectedIndices: number[] = [];

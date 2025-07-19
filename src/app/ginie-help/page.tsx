@@ -33,6 +33,7 @@ import {
   FileText,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ClientOnly } from '@/components/ui/client-only';
 
 // Menu items configuration (same as DashboardLayout)
 const menuItems = [
@@ -101,14 +102,14 @@ export default function GinieHelp() {
     if (!message.trim() && attachments.length === 0) return;
 
     const userMessage: Message = {
-      id: Date.now().toString(),
+      id: `user-${messages.length + 1}-${Math.random().toString(36).substr(2, 9)}`,
       type: 'user',
       content: message,
       timestamp: new Date(),
       attachments: attachments.map(file => ({
         type: file.type.startsWith('image/') ? 'image' : 'file',
         name: file.name,
-        url: URL.createObjectURL(file),
+        url: typeof URL !== 'undefined' ? URL.createObjectURL(file) : '',
         size: file.size,
       })),
     };
@@ -141,7 +142,7 @@ export default function GinieHelp() {
 
       if (data.success) {
         const aiMessage: Message = {
-          id: (Date.now() + 1).toString(),
+          id: `ai-${messages.length + 2}-${Math.random().toString(36).substr(2, 9)}`,
           type: 'ai',
           content: data.response,
           timestamp: new Date(),
@@ -160,7 +161,7 @@ export default function GinieHelp() {
         }
 
         const errorMessage: Message = {
-          id: (Date.now() + 1).toString(),
+          id: `ai-error-${messages.length + 2}-${Math.random().toString(36).substr(2, 9)}`,
           type: 'ai',
           content: errorContent,
           timestamp: new Date(),
@@ -173,7 +174,7 @@ export default function GinieHelp() {
       
       // Handle network error
       const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
+        id: `ai-network-error-${messages.length + 2}-${Math.random().toString(36).substr(2, 9)}`,
         type: 'ai',
         content: 'Sorry, I encountered a network error. Please check your connection and try again.',
         timestamp: new Date(),
@@ -204,7 +205,9 @@ export default function GinieHelp() {
   };
 
   const copyMessage = (content: string) => {
-    navigator.clipboard.writeText(content);
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(content);
+    }
   };
 
   return (
