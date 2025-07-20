@@ -1,214 +1,62 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarHeader,
-  SidebarInset,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarProvider,
-} from "@/components/ui/sidebar";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useAuth } from '@/hooks/use-auth';
+import DashboardLayout from '@/components/layout/dashboard-layout';
 import {
-  Settings,
-  BookOpen,
-  HelpCircle,
-  Upload,
-  Users,
-  LogOut,
-  Plus,
-  X,
+  FileText,
   Edit,
   Trash2,
-  Share,
-  Tag,
-  Image as ImageIcon,
+  Eye,
+  Share2,
+  Plus,
+  X,
   Paperclip,
-  FileText,
+  Globe,
+  Download,
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useAuth } from '@/hooks/use-auth';
-import { addNote } from '@/lib/firebase-db';
-
-// Menu items configuration (same as DashboardLayout)
-const menuItems = [
-  {
-    title: "General",
-    icon: Settings,
-    href: "/general",
-  },
-  {
-    title: "Search Books",
-    icon: BookOpen,
-    href: "/search-books",
-  },
-  {
-    title: "Ginie Help",
-    icon: HelpCircle,
-    href: "/ginie-help",
-  },
-  {
-    title: "Upload Notes",
-    icon: Upload,
-    href: "/upload-notes",
-  },
-  {
-    title: "Community Notes",
-    icon: Users,
-    href: "/publish-notes",
-  },
-];
 
 interface Note {
   id: string;
   title: string;
   content: string;
-  tags: string[];
   subject: string;
+  tags: string[];
+  isPublished: boolean;
   createdAt: Date;
   updatedAt: Date;
-  isPublished: boolean;
-  attachments: {
-    type: 'file' | 'image';
-    name: string;
-    url: string;
-    size: number;
-  }[];
+  attachments: File[];
+  author: string;
+  views: number;
+  downloads: number;
 }
 
 export default function UploadNotes() {
   const [notes, setNotes] = useState<Note[]>([]);
+  const [activeTab, setActiveTab] = useState<'create' | 'edit' | 'published'>('create');
   const [editingNote, setEditingNote] = useState<Note | null>(null);
-  const [newNote, setNewNote] = useState({
+  const [attachments, setAttachments] = useState<File[]>([]);
+  const [newTag, setNewTag] = useState('');
+  const { user } = useAuth();
+
+  // Form state for creating/editing notes
+  const [formData, setFormData] = useState({
     title: '',
     content: '',
     subject: '',
     tags: [] as string[],
   });
-  const [tagInput, setTagInput] = useState('');
-  const [attachments, setAttachments] = useState<File[]>([]);
-  const [activeTab, setActiveTab] = useState<'my-notes' | 'create-note'>('my-notes');
-  
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const imageInputRef = useRef<HTMLInputElement>(null);
-  const pathname = usePathname();
-  const router = useRouter();
-  const { user, logout } = useAuth();
 
-  // Get user initials for avatar fallback
-  const getUserInitials = (displayName: string | null | undefined) => {
-    if (!displayName) return 'U';
-    return displayName.split(' ').map(name => name[0]).join('').toUpperCase().slice(0, 2);
-  };
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Get user display name
   const getUserDisplayName = () => {
     if (!user) return 'Guest';
     return user.displayName || user.email?.split('@')[0] || 'User';
-  };
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      // Redirect to auth page after successful logout
-      router.push('/auth');
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-  };
-
-  const handleCreateNote = async () => {
-    if (!newNote.title.trim() || !newNote.content.trim() || !user) return;
-
-    // Prepare note data
-    const noteData = {
-      title: newNote.title,
-      content: newNote.content,
-      subject: newNote.subject,
-      tags: newNote.tags,
-      isPublic: true, // Always public for community
-      fileUrl: undefined, // You can add file upload logic here
-      fileType: undefined,
-      fileSize: undefined,
-      bookId: undefined,
-      attachments: attachments.map(file => ({
-        name: file.name,
-        size: file.size,
-        url: URL.createObjectURL(file)
-      })),
-      author: {
-        name: user?.displayName || 'Anonymous',
-        avatar: user?.email?.split('@')[0] || 'user'
-      }
-    };
-
-    // Upload to Firestore
-    await addNote(user.uid, noteData);
-
-    // Optionally, update local state or show a success message
-    setNewNote({ title: '', content: '', subject: '', tags: [] });
-    setAttachments([]);
-    setActiveTab('my-notes');
-  };
-
-  const handleEditNote = (note: Note) => {
-    setEditingNote(note);
-    setNewNote({
-      title: note.title,
-      content: note.content,
-      subject: note.subject,
-      tags: note.tags,
-    });
-    setActiveTab('create-note');
-  };
-
-  const handleUpdateNote = () => {
-    if (!editingNote || !newNote.title.trim() || !newNote.content.trim()) return;
-
-    const updatedNote: Note = {
-      ...editingNote,
-      title: newNote.title,
-      content: newNote.content,
-      subject: newNote.subject,
-      tags: newNote.tags,
-      updatedAt: new Date(),
-    };
-
-    setNotes(notes.map(note => note.id === editingNote.id ? updatedNote : note));
-    setEditingNote(null);
-    setNewNote({ title: '', content: '', subject: '', tags: [] });
-    setActiveTab('my-notes');
-  };
-
-  const handleDeleteNote = (id: string) => {
-    setNotes(notes.filter(note => note.id !== id));
-  };
-
-  const handlePublishNote = (id: string) => {
-    setNotes(notes.map(note => 
-      note.id === id ? { ...note, isPublished: !note.isPublished } : note
-    ));
-  };
-
-  const handleAddTag = () => {
-    if (tagInput.trim() && !newNote.tags.includes(tagInput.trim())) {
-      setNewNote({ ...newNote, tags: [...newNote.tags, tagInput.trim()] });
-      setTagInput('');
-    }
-  };
-
-  const handleRemoveTag = (tagToRemove: string) => {
-    setNewNote({ ...newNote, tags: newNote.tags.filter(tag => tag !== tagToRemove) });
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -220,390 +68,463 @@ export default function UploadNotes() {
     setAttachments(prev => prev.filter((_, i) => i !== index));
   };
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  const addTag = () => {
+    if (newTag.trim() && !formData.tags.includes(newTag.trim())) {
+      setFormData(prev => ({
+        ...prev,
+        tags: [...prev.tags, newTag.trim()]
+      }));
+      setNewTag('');
+    }
   };
 
+  const removeTag = (tagToRemove: string) => {
+    setFormData(prev => ({
+      ...prev,
+      tags: prev.tags.filter(tag => tag !== tagToRemove)
+    }));
+  };
+
+  const handleCreateNote = () => {
+    if (!formData.title.trim() || !formData.content.trim()) return;
+
+    const newNote: Note = {
+      id: Date.now().toString(),
+      title: formData.title,
+      content: formData.content,
+      subject: formData.subject,
+      tags: formData.tags,
+      isPublished: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      attachments: [...attachments],
+      author: getUserDisplayName(),
+      views: 0,
+      downloads: 0,
+    };
+
+    setNotes(prev => [newNote, ...prev]);
+    resetForm();
+  };
+
+  const handleEditNote = (note: Note) => {
+    setEditingNote(note);
+    setFormData({
+      title: note.title,
+      content: note.content,
+      subject: note.subject,
+      tags: note.tags,
+    });
+    setAttachments([...note.attachments]);
+    setActiveTab('edit');
+  };
+
+  const handleUpdateNote = () => {
+    if (!editingNote || !formData.title.trim() || !formData.content.trim()) return;
+
+    const updatedNote: Note = {
+      ...editingNote,
+      title: formData.title,
+      content: formData.content,
+      subject: formData.subject,
+      tags: formData.tags,
+      updatedAt: new Date(),
+      attachments: [...attachments],
+    };
+
+    setNotes(prev => prev.map(note => 
+      note.id === editingNote.id ? updatedNote : note
+    ));
+    resetForm();
+    setEditingNote(null);
+    setActiveTab('create');
+  };
+
+  const handleDeleteNote = (noteId: string) => {
+    setNotes(prev => prev.filter(note => note.id !== noteId));
+    if (editingNote?.id === noteId) {
+      resetForm();
+      setEditingNote(null);
+      setActiveTab('create');
+    }
+  };
+
+  const handlePublishNote = (noteId: string) => {
+    setNotes(prev => prev.map(note => 
+      note.id === noteId ? { ...note, isPublished: true } : note
+    ));
+  };
+
+  const handleUnpublishNote = (noteId: string) => {
+    setNotes(prev => prev.map(note => 
+      note.id === noteId ? { ...note, isPublished: false } : note
+    ));
+  };
+
+  const resetForm = () => {
+    setFormData({
+      title: '',
+      content: '',
+      subject: '',
+      tags: [],
+    });
+    setAttachments([]);
+    setNewTag('');
+  };
+
+  const publishedNotes = notes.filter(note => note.isPublished);
+  const unpublishedNotes = notes.filter(note => !note.isPublished);
+
   return (
-    <SidebarProvider>
-      <div className="flex h-screen flex-1 w-full min-w-0 bg-black text-white">
-        {/* Sidebar - Same as DashboardLayout */}
-        <Sidebar className="bg-black border-r border-gray-800">
-          <SidebarHeader className="p-4 border-b border-gray-800">
-            <div className="flex items-center space-x-3">
-              <Avatar className="w-8 h-8">
-                <AvatarImage src={user?.photoURL || undefined} alt={getUserDisplayName()} />
-                <AvatarFallback className="bg-blue-600 text-white font-bold text-sm">
-                  {getUserInitials(user?.displayName)}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="text-white font-medium text-sm">{getUserDisplayName()}</p>
-                <p className="text-gray-400 text-xs">Pro Plan</p>
+    <DashboardLayout fullScreen>
+      {/* Header */}
+      <div className="border-b border-gray-800 p-6 md:p-8 w-full">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-semibold text-white mb-2">Upload Notes</h1>
+            <p className="text-gray-400 text-sm md:text-base">Create, manage, and publish your study notes</p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setActiveTab('create')}
+              className={`${activeTab === 'create' ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-700 text-gray-300 hover:bg-gray-800'} text-sm`}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              <span className="hidden sm:inline">Create Note</span>
+              <span className="sm:hidden">Create</span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setActiveTab('edit')}
+              className={`${activeTab === 'edit' ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-700 text-gray-300 hover:bg-gray-800'} text-sm`}
+            >
+              <Edit className="w-4 h-4 mr-2" />
+              <span className="hidden sm:inline">Edit Notes</span>
+              <span className="sm:hidden">Edit</span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setActiveTab('published')}
+              className={`${activeTab === 'published' ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-700 text-gray-300 hover:bg-gray-800'} text-sm`}
+            >
+              <Globe className="w-4 h-4 mr-2" />
+              <span className="hidden sm:inline">Published</span>
+              <span className="sm:hidden">Published</span>
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 w-full h-full" style={{ width: '100%', maxWidth: 'none' }}>
+        {activeTab === 'create' && (
+          <div className="w-full h-full flex flex-col" style={{ width: '100%', maxWidth: 'none' }}>
+            <div className="p-6 md:p-8 w-full h-full flex flex-col" style={{ width: '100%', maxWidth: 'none' }}>
+              <div className="mb-6">
+                <h2 className="text-xl md:text-2xl font-semibold text-white mb-2">Create New Note</h2>
+                <p className="text-gray-400 text-sm md:text-base">Write and organize your study materials</p>
               </div>
-            </div>
-          </SidebarHeader>
-          
-          <SidebarContent className="px-4 py-4">
-            <SidebarGroup>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {menuItems.map((item) => {
-                    const isActive = pathname === item.href;
-                    return (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton 
-                        asChild
-                          className={`text-gray-400 hover:text-white hover:bg-gray-800 transition-all duration-200 w-full ${isActive ? 'bg-gray-800 text-white' : ''}`}
-                        >
-                          <Link href={item.href} className="flex items-center space-x-3 w-full px-3 py-2 rounded-md">
-                            <item.icon className="w-4 h-4" />
-                            <span className="font-normal text-sm">{item.title}</span>
-                          </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    );
-                  })}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          </SidebarContent>
-          
-          <SidebarFooter className="p-4 border-t border-gray-800">
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  onClick={handleLogout}
-                  className="text-gray-400 hover:text-white hover:bg-red-800 transition-all duration-200 w-full px-3 py-2 rounded-md"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span className="font-normal text-sm">Log Out</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarFooter>
-        </Sidebar>
-        
-        {/* Main Content Area - Full width without padding */}
-        <SidebarInset className="flex-1 w-full min-w-0 bg-black">
-          <div className="h-full overflow-y-auto">
-            <div className="min-h-full flex flex-col">
-              {/* Header */}
-              <div className="border-b border-gray-800 p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h1 className="text-3xl font-semibold text-white mb-2">Upload Notes</h1>
-                    <p className="text-gray-400">Create, manage, and publish your study notes</p>
+              <div className="space-y-6" style={{ width: '100%' }}>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full" style={{ width: '100%' }}>
+                  <div style={{ width: '100%' }}>
+                    <Label htmlFor="title" className="text-white text-sm font-medium mb-2 block">
+                      Title
+                    </Label>
+                    <Input
+                      id="title"
+                      value={formData.title}
+                      onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                      placeholder="Enter note title"
+                      className="mt-1 bg-gray-800 border-gray-700 text-white placeholder-gray-500 text-sm w-full focus:border-blue-500"
+                      style={{ width: '100%' }}
+                    />
                   </div>
-                  <div className="flex space-x-2">
-                    <Button
-                      onClick={() => setActiveTab('my-notes')}
-                      variant={activeTab === 'my-notes' ? 'default' : 'outline'}
-                      className="bg-gray-800 hover:bg-gray-700 text-white border-gray-600"
+                  <div style={{ width: '100%' }}>
+                    <Label htmlFor="subject" className="text-white text-sm font-medium mb-2 block">
+                      Subject
+                    </Label>
+                    <Input
+                      id="subject"
+                      value={formData.subject}
+                      onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
+                      placeholder="e.g., Mathematics, Physics"
+                      className="mt-1 bg-gray-800 border-gray-700 text-white placeholder-gray-500 text-sm w-full focus:border-blue-500"
+                      style={{ width: '100%' }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ width: '100%' }}>
+                  <Label htmlFor="content" className="text-white text-sm font-medium mb-2 block">
+                    Content
+                  </Label>
+                  <Textarea
+                    id="content"
+                    value={formData.content}
+                    onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+                    placeholder="Write your note content here..."
+                    rows={8}
+                    className="mt-1 bg-gray-800 border-gray-700 text-white placeholder-gray-500 text-sm w-full focus:border-blue-500 resize-none"
+                    style={{ width: '100%' }}
+                  />
+                </div>
+
+                <div style={{ width: '100%' }}>
+                  <Label className="text-white text-sm font-medium mb-2 block">
+                    Tags
+                  </Label>
+                  <div className="mt-2 flex flex-wrap gap-2 mb-3">
+                    {formData.tags.map((tag, index) => (
+                      <span key={index} className="px-3 py-1 bg-blue-600 text-white text-xs rounded-full flex items-center">
+                        {tag}
+                        <button
+                          onClick={() => removeTag(tag)}
+                          className="ml-2 hover:text-red-300"
+                          title={`Remove ${tag} tag`}
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <Input
+                      value={newTag}
+                      onChange={(e) => setNewTag(e.target.value)}
+                      placeholder="Add a tag"
+                      className="flex-1 bg-gray-800 border-gray-700 text-white placeholder-gray-500 text-sm w-full focus:border-blue-500"
+                      style={{ width: '100%' }}
+                      onKeyPress={(e) => e.key === 'Enter' && addTag()}
+                    />
+                    <Button 
+                      onClick={addTag} 
+                      size="sm" 
+                      className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2"
                     >
-                      My Notes ({notes.length})
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        setActiveTab('create-note');
-                        setEditingNote(null);
-                        setNewNote({ title: '', content: '', subject: '', tags: [] });
-                      }}
-                      variant={activeTab === 'create-note' ? 'default' : 'outline'}
-                      className="bg-blue-600 hover:bg-blue-700 text-white border-blue-500"
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      Create Note
+                      Add
                     </Button>
                   </div>
                 </div>
-              </div>
 
-              {/* Main Content */}
-              <div className="flex-1 p-6">
-                {activeTab === 'my-notes' ? (
-                  /* My Notes Tab */
-                  <div className="w-full">
-                    {notes.length === 0 ? (
-                      <div className="text-center py-12">
-                        <FileText className="w-16 h-16 text-gray-500 mx-auto mb-4" />
-                        <h3 className="text-xl font-medium text-white mb-2">No notes yet</h3>
-                        <p className="text-gray-400 mb-4">Start creating your first note to share with the community</p>
-                        <Button
-                          onClick={() => setActiveTab('create-note')}
-                          className="bg-blue-600 hover:bg-blue-700 text-white"
-                        >
-                          <Plus className="w-4 h-4 mr-2" />
-                          Create Your First Note
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {notes.map((note) => (
-                          <div key={note.id} className="bg-gray-900 border border-gray-800 rounded-lg p-6 hover:border-gray-700 transition-colors">
-                            <div className="flex items-start justify-between mb-3">
-                              <h3 className="text-white font-medium text-lg truncate">{note.title}</h3>
-                              <div className="flex items-center space-x-1">
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  onClick={() => handleEditNote(note)}
-                                  className="text-gray-400 hover:text-white p-1"
-                                >
-                                  <Edit className="w-4 h-4" />
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  onClick={() => handleDeleteNote(note.id)}
-                                  className="text-gray-400 hover:text-red-400 p-1"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                </Button>
-                              </div>
-                            </div>
-                            
-                            {note.subject && (
-                              <p className="text-sm text-blue-400 mb-2">{note.subject}</p>
-                            )}
-                            
-                            <p className="text-gray-400 text-sm mb-3 line-clamp-3">{note.content}</p>
-                            
-                            {note.tags.length > 0 && (
-                              <div className="flex flex-wrap gap-1 mb-3">
-                                {note.tags.map((tag, index) => (
-                                  <span key={index} className="px-2 py-1 bg-gray-800 text-gray-300 text-xs rounded">
-                                    {tag}
-                                  </span>
-                                ))}
-                              </div>
-                            )}
-                            
-                            {note.attachments.length > 0 && (
-                              <div className="mb-3">
-                                <p className="text-xs text-gray-500 mb-1">{note.attachments.length} attachment(s)</p>
-                              </div>
-                            )}
-                            
-                            <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
-                              <span>Created {note.createdAt.toLocaleDateString()}</span>
-                              <span className={`px-2 py-1 rounded ${note.isPublished ? 'bg-green-800 text-green-300' : 'bg-gray-800 text-gray-300'}`}>
-                                {note.isPublished ? 'Published' : 'Draft'}
-                              </span>
-                            </div>
-                            
-                            <div className="flex space-x-2">
-                              <Button
-                                size="sm"
-                                onClick={() => handlePublishNote(note.id)}
-                                className={`flex-1 ${note.isPublished ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'} text-white`}
-                              >
-                                <Share className="w-4 h-4 mr-2" />
-                                {note.isPublished ? 'Unpublish' : 'Publish'}
-                              </Button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                <div style={{ width: '100%' }}>
+                  <Label className="text-white text-sm font-medium mb-2 block">
+                    Attachments
+                  </Label>
+                  <div className="mt-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="border-gray-700 text-gray-300 hover:bg-gray-800 text-sm"
+                    >
+                      <Paperclip className="w-4 h-4 mr-2" />
+                      Add Files
+                    </Button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      multiple
+                      onChange={handleFileUpload}
+                      className="hidden"
+                      title="Upload files"
+                    />
                   </div>
-                ) : (
-                  /* Create Note Tab */
-                  <div className="w-full">
-                    <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
-                      <h2 className="text-2xl font-semibold text-white mb-6">
-                        {editingNote ? 'Edit Note' : 'Create New Note'}
-                      </h2>
-                      
-                      <div className="space-y-6">
-                        {/* Title */}
-                        <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-2">
-                            Title *
-                          </label>
-                          <Input
-                            value={newNote.title}
-                            onChange={(e) => setNewNote({ ...newNote, title: e.target.value })}
-                            placeholder="Enter note title..."
-                            className="bg-gray-800 border-gray-700 text-white placeholder-gray-500"
-                          />
-                        </div>
-                        
-                        {/* Subject */}
-                        <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-2">
-                            Subject
-                          </label>
-                          <Input
-                            value={newNote.subject}
-                            onChange={(e) => setNewNote({ ...newNote, subject: e.target.value })}
-                            placeholder="e.g., Mathematics, Computer Science, Biology..."
-                            className="bg-gray-800 border-gray-700 text-white placeholder-gray-500"
-                          />
-                        </div>
-                        
-                        {/* Content */}
-                        <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-2">
-                            Content *
-                          </label>
-                          <Textarea
-                            value={newNote.content}
-                            onChange={(e) => setNewNote({ ...newNote, content: e.target.value })}
-                            placeholder="Write your note content here..."
-                            rows={10}
-                            className="bg-gray-800 border-gray-700 text-white placeholder-gray-500 resize-none"
-                          />
-                        </div>
-                        
-                        {/* Tags */}
-                        <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-2">
-                            Tags
-                          </label>
-                          <div className="flex space-x-2 mb-2">
-                            <Input
-                              value={tagInput}
-                              onChange={(e) => setTagInput(e.target.value)}
-                              onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
-                              placeholder="Add a tag..."
-                              className="bg-gray-800 border-gray-700 text-white placeholder-gray-500"
-                            />
-                            <Button
-                              onClick={handleAddTag}
-                              className="bg-gray-700 hover:bg-gray-600 text-white"
-                            >
-                              <Tag className="w-4 h-4" />
-                            </Button>
+                  {attachments.length > 0 && (
+                    <div className="mt-4 space-y-2">
+                      {attachments.map((file, index) => (
+                        <div key={index} className="flex items-center justify-between p-3 bg-gray-800 rounded border border-gray-700">
+                          <div className="flex items-center space-x-2">
+                            <FileText className="w-4 h-4 text-blue-400" />
+                            <span className="text-white text-sm truncate">{file.name}</span>
                           </div>
-                          {newNote.tags.length > 0 && (
-                            <div className="flex flex-wrap gap-2">
-                              {newNote.tags.map((tag, index) => (
-                                <span key={index} className="px-3 py-1 bg-blue-600 text-white text-sm rounded-full flex items-center">
-                                  {tag}
-                                  <button
-                                    onClick={() => handleRemoveTag(tag)}
-                                    className="ml-2 hover:text-red-300"
-                                    title="Remove tag"
-                                    aria-label={`Remove ${tag} tag`}
-                                  >
-                                    <X className="w-3 h-3" />
-                                  </button>
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                        
-                        {/* Attachments */}
-                        <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-2">
-                            Attachments
-                          </label>
-                          <div className="flex space-x-2 mb-4">
-                            <Button
-                              onClick={() => fileInputRef.current?.click()}
-                              variant="outline"
-                              className="bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700"
-                            >
-                              <Paperclip className="w-4 h-4 mr-2" />
-                              Upload File
-                            </Button>
-                            <Button
-                              onClick={() => imageInputRef.current?.click()}
-                              variant="outline"
-                              className="bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700"
-                            >
-                              <ImageIcon className="w-4 h-4 mr-2" />
-                              Upload Image
-                            </Button>
-                          </div>
-                          
-                          {attachments.length > 0 && (
-                            <div className="space-y-2">
-                              {attachments.map((file, index) => (
-                                <div key={index} className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
-                                  <div className="flex items-center space-x-3">
-                                    {file.type.startsWith('image/') ? (
-                                      <ImageIcon className="w-5 h-5 text-blue-400" />
-                                    ) : (
-                                      <FileText className="w-5 h-5 text-gray-400" />
-                                    )}
-                                    <div>
-                                      <p className="text-white text-sm">{file.name}</p>
-                                      <p className="text-gray-400 text-xs">{formatFileSize(file.size)}</p>
-                                    </div>
-                                  </div>
-                                  <Button
-                                    onClick={() => removeAttachment(index)}
-                                    variant="ghost"
-                                    size="sm"
-                                    className="text-red-400 hover:text-red-300"
-                                  >
-                                    <X className="w-4 h-4" />
-                                  </Button>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                        
-                        {/* Action Buttons */}
-                        <div className="flex justify-end space-x-3 pt-4">
-                          <Button
-                            onClick={() => {
-                              setActiveTab('my-notes');
-                              setEditingNote(null);
-                              setNewNote({ title: '', content: '', subject: '', tags: [] });
-                            }}
-                            variant="outline"
-                            className="bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700"
+                          <button
+                            onClick={() => removeAttachment(index)}
+                            className="text-gray-400 hover:text-red-400 ml-2"
+                            title={`Remove ${file.name}`}
                           >
-                            Cancel
-                          </Button>
-                          <Button
-                            onClick={editingNote ? handleUpdateNote : handleCreateNote}
-                            className="bg-blue-600 hover:bg-blue-700 text-white"
-                            disabled={!newNote.title.trim() || !newNote.content.trim()}
-                          >
-                            {editingNote ? 'Update Note' : 'Create Note'}
-                          </Button>
+                            <X className="w-4 h-4" />
+                          </button>
                         </div>
-                      </div>
+                      ))}
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
+
+                <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4 pt-4 border-t border-gray-800">
+                  <Button
+                    variant="outline"
+                    onClick={resetForm}
+                    className="border-gray-700 text-gray-300 hover:bg-gray-800 text-sm"
+                  >
+                    Reset
+                  </Button>
+                  <Button
+                    onClick={handleCreateNote}
+                    disabled={!formData.title.trim() || !formData.content.trim()}
+                    className="bg-green-600 hover:bg-green-700 text-white text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Create Note
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
-        </SidebarInset>
+        )}
+
+        {activeTab === 'edit' && (
+          <div className="space-y-6 w-full h-full p-6 md:p-8">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+              <h2 className="text-xl md:text-2xl font-semibold text-white">My Notes</h2>
+              <Button
+                onClick={() => setActiveTab('create')}
+                className="bg-blue-600 hover:bg-blue-700 text-white text-sm"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Create New
+              </Button>
+            </div>
+
+            {unpublishedNotes.length === 0 ? (
+              <div className="bg-gray-900/30 border border-gray-800 text-center p-8 w-full h-full rounded">
+                <FileText className="w-12 h-12 text-gray-500 mx-auto mb-4" />
+                <h3 className="text-white font-medium mb-2 text-lg">No notes yet</h3>
+                <p className="text-gray-400 mb-6 text-sm">Create your first note to get started</p>
+                <Button
+                  onClick={() => setActiveTab('create')}
+                  className="bg-blue-600 hover:bg-blue-700 text-white text-sm"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Create Note
+                </Button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full h-full">
+                {unpublishedNotes.map((note) => (
+                  <div key={note.id} className="bg-gray-900/30 border border-gray-800 p-6 hover:bg-gray-900/50 transition-colors w-full h-full rounded">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-white text-lg font-medium truncate">{note.title}</h3>
+                        <p className="text-gray-400 text-sm truncate">{note.subject}</p>
+                      </div>
+                      <div className="flex items-center space-x-1 ml-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleEditNote(note)}
+                          className="border-gray-700 text-gray-300 hover:bg-gray-800 p-1"
+                          title="Edit note"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleDeleteNote(note.id)}
+                          className="border-gray-700 text-red-400 hover:bg-red-900/20 p-1"
+                          title="Delete note"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    <p className="text-gray-300 text-sm mb-4 line-clamp-3">
+                      {note.content}
+                    </p>
+                    <div className="flex flex-wrap gap-1 mb-4">
+                      {note.tags.map((tag, index) => (
+                        <span key={index} className="px-2 py-1 bg-gray-700 text-gray-300 text-xs rounded">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+                      <span>Created {note.createdAt.toLocaleDateString()}</span>
+                      <span>{note.attachments.length} attachments</span>
+                    </div>
+                    <div className="mt-4">
+                      <Button
+                        onClick={() => handlePublishNote(note.id)}
+                        size="sm"
+                        className="w-full bg-green-600 hover:bg-green-700 text-white text-sm"
+                      >
+                        <Share2 className="w-4 h-4 mr-2" />
+                        Publish
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'published' && (
+          <div className="space-y-6 w-full h-full p-6 md:p-8">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl md:text-2xl font-semibold text-white">Published Notes</h2>
+            </div>
+
+            {publishedNotes.length === 0 ? (
+              <div className="bg-gray-900/30 border border-gray-800 text-center p-8 w-full h-full rounded">
+                <Globe className="w-12 h-12 text-gray-500 mx-auto mb-4" />
+                <h3 className="text-white font-medium mb-2 text-lg">No published notes</h3>
+                <p className="text-gray-400 mb-6 text-sm">Publish your notes to share them with the community</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full h-full">
+                {publishedNotes.map((note) => (
+                  <div key={note.id} className="bg-gray-900/30 border border-gray-800 p-6 hover:bg-gray-900/50 transition-colors w-full h-full rounded">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-white text-lg font-medium truncate">{note.title}</h3>
+                        <p className="text-gray-400 text-sm truncate">{note.subject}</p>
+                      </div>
+                      <div className="flex items-center space-x-1 ml-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleUnpublishNote(note.id)}
+                          className="border-gray-700 text-yellow-400 hover:bg-yellow-900/20 p-1"
+                          title="Unpublish note"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    <p className="text-gray-300 text-sm mb-4 line-clamp-3">
+                      {note.content}
+                    </p>
+                    <div className="flex flex-wrap gap-1 mb-4">
+                      {note.tags.map((tag, index) => (
+                        <span key={index} className="px-2 py-1 bg-gray-700 text-gray-300 text-xs rounded">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+                      <span>Published {note.updatedAt.toLocaleDateString()}</span>
+                      <span>{note.attachments.length} attachments</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs text-gray-500">
+                      <span className="flex items-center">
+                        <Eye className="w-3 h-3 mr-1" />
+                        {note.views} views
+                      </span>
+                      <span className="flex items-center">
+                        <Download className="w-3 h-3 mr-1" />
+                        {note.downloads} downloads
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
-      
-      {/* Hidden file inputs */}
-      <input
-        ref={fileInputRef}
-        type="file"
-        multiple
-        accept=".txt,.pdf,.doc,.docx,.md,.ppt,.pptx"
-        onChange={handleFileUpload}
-        className="hidden"
-        title="Upload files"
-        aria-label="Upload files"
-      />
-      <input
-        ref={imageInputRef}
-        type="file"
-        multiple
-        accept="image/*"
-        onChange={handleFileUpload}
-        className="hidden"
-        title="Upload images"
-        aria-label="Upload images"
-      />
-    </SidebarProvider>
+    </DashboardLayout>
   );
 } 

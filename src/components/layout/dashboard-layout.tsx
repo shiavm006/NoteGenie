@@ -91,8 +91,25 @@ export default function DashboardLayout({ children, fullScreen = false }: Dashbo
 
   return (
     <SidebarProvider>
+      {fullScreen && (
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            [data-slot="sidebar-inset"] {
+              margin: 0 !important;
+              padding: 0 !important;
+              max-width: none !important;
+              width: 100% !important;
+              min-width: 100% !important;
+            }
+            [data-slot="sidebar-inset"] > div {
+              width: 100% !important;
+              max-width: none !important;
+            }
+          `
+        }} />
+      )}
       <div className="flex h-screen bg-black text-white">
-        <Sidebar className="bg-black border-r border-gray-800">
+        <Sidebar className="bg-black border-r border-gray-800" variant="inset" data-variant="sidebar">
           <SidebarHeader className="p-4 border-b border-gray-800">
             <div className="flex items-center space-x-3">
               <Avatar className="w-8 h-8">
@@ -148,7 +165,17 @@ export default function DashboardLayout({ children, fullScreen = false }: Dashbo
           </SidebarFooter>
         </Sidebar>
         
-        <SidebarInset className="flex-1 bg-black">
+        <SidebarInset 
+          className={`flex-1 bg-black ${fullScreen ? '!m-0 !p-0 !rounded-none !shadow-none !max-w-none !w-full' : ''}`}
+          style={fullScreen ? { 
+            margin: 0, 
+            padding: 0, 
+            maxWidth: 'none', 
+            width: '100%',
+            minWidth: '100%'
+          } : {}}
+          data-variant="sidebar"
+        >
           <div className="h-full overflow-y-auto">
             <div className="min-h-full flex flex-col">
               {/* Mobile Header with Sidebar Trigger */}
@@ -169,7 +196,15 @@ export default function DashboardLayout({ children, fullScreen = false }: Dashbo
               </div>
               
               {/* Main Content Container - Full width */}
-              <div className={`flex-1 w-full ${fullScreen ? '' : 'px-6 py-8'}`}>
+              <div 
+                className={`flex-1 w-full ${fullScreen ? '!p-0 !max-w-none' : 'px-6 py-8'}`}
+                style={fullScreen ? { 
+                  padding: 0, 
+                  maxWidth: 'none', 
+                  width: '100%',
+                  minWidth: '100%'
+                } : {}}
+              >
                 {children}
               </div>
             </div>
