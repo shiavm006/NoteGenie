@@ -15,6 +15,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import {
   Settings,
@@ -58,9 +59,10 @@ const menuItems = [
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
+  fullScreen?: boolean;
 }
 
-export default function DashboardLayout({ children }: DashboardLayoutProps) {
+export default function DashboardLayout({ children, fullScreen = false }: DashboardLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuth();
@@ -149,8 +151,25 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <SidebarInset className="flex-1 bg-black">
           <div className="h-full overflow-y-auto">
             <div className="min-h-full flex flex-col">
+              {/* Mobile Header with Sidebar Trigger */}
+              <div className="md:hidden flex items-center justify-between p-4 border-b border-gray-800">
+                <div className="flex items-center space-x-3">
+                  <Avatar className="w-8 h-8">
+                    <AvatarImage src={user?.photoURL || undefined} alt={getUserDisplayName()} />
+                    <AvatarFallback className="bg-blue-600 text-white font-bold text-sm">
+                      {getUserInitials(user?.displayName)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-white font-medium text-sm">{getUserDisplayName()}</p>
+                    <p className="text-gray-400 text-xs">Pro Plan</p>
+                  </div>
+                </div>
+                <SidebarTrigger className="md:hidden" />
+              </div>
+              
               {/* Main Content Container - Full width */}
-              <div className="flex-1 w-full px-6 py-8">
+              <div className={`flex-1 w-full ${fullScreen ? '' : 'px-6 py-8'}`}>
                 {children}
               </div>
             </div>
