@@ -5,7 +5,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-// Library storage utilities
 export interface LibraryBook {
   id: string;
   title: string;
@@ -23,7 +22,7 @@ export interface LibraryBook {
     identifier: string;
   }>;
   infoLink?: string;
-  addedAt: string; // ISO date string
+  addedAt: string;
 }
 
 const LIBRARY_STORAGE_KEY = 'note-ginie-library';
@@ -47,7 +46,7 @@ export const libraryStorage = {
       const bookExists = books.some(b => b.id === book.id);
       
       if (bookExists) {
-        return false; // Book already in library
+        return false;
       }
 
       const newBook: LibraryBook = {

@@ -14,16 +14,16 @@ export const uploadFile = async (
   folder: 'notes' | 'images' | 'avatars' = 'notes'
 ): Promise<{ success: boolean; url?: string; error?: string }> => {
   try {
-    // Create a unique filename
+    
     const timestamp = Date.now();
     const fileName = `${timestamp}_${file.name}`;
     const fileRef = ref(storage, `users/${userId}/${folder}/${fileName}`);
     
-    // Upload the file
-    const snapshot = await uploadBytes(fileRef, file);
     
-    // Get the download URL
-    const downloadURL = await getDownloadURL(snapshot.ref);
+    const snapshot = await uploadBytes(fileRef, file);// uplod file to storage
+    
+    
+    const downloadURL = await getDownloadURL(snapshot.ref); // for file download 
     
     return {
       success: true,
@@ -102,7 +102,6 @@ export const getFileSize = (bytes: number): string => {
 };
 
 export const validateFile = (file: File, maxSize: number = 10 * 1024 * 1024): { valid: boolean; error?: string } => {
-  // Check file size (default 10MB)
   if (file.size > maxSize) {
     return {
       valid: false,
@@ -110,7 +109,7 @@ export const validateFile = (file: File, maxSize: number = 10 * 1024 * 1024): { 
     };
   }
   
-  // Check file type
+
   const allowedTypes = [
     'text/plain',
     'application/pdf',

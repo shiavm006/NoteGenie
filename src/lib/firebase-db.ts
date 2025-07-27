@@ -15,15 +15,14 @@ import {
 import { db } from './firebase';
 import { LibraryBook } from './utils';
 
-// Types
 export interface UserBook extends LibraryBook {
   userId: string;
-  addedAt: any; // Firestore timestamp
+  addedAt: any;
   readingProgress?: {
     currentPage: number;
     totalPages: number;
     percentage: number;
-    lastRead: any; // Firestore timestamp
+    lastRead: any;
   };
 }
 
@@ -51,8 +50,8 @@ export interface UserNote {
     size: number;
     url: string;
   }>;
-  createdAt: any; // Firestore timestamp
-  updatedAt: any; // Firestore timestamp
+  createdAt: any;
+  updatedAt: any;
 }
 
 export interface UserProfile {
@@ -60,8 +59,8 @@ export interface UserProfile {
   email: string;
   displayName: string;
   photoURL?: string;
-  createdAt: any; // Firestore timestamp
-  lastLogin: any; // Firestore timestamp
+  createdAt: any;
+  lastLogin: any;
   preferences: {
     theme: 'dark' | 'light';
     notifications: boolean;
@@ -74,7 +73,7 @@ export interface UserProfile {
   };
 }
 
-// Books Collection
+// bokks 
 export const booksCollection = (userId: string) => 
   collection(db, 'users', userId, 'books');
 
@@ -144,7 +143,7 @@ export const updateBookProgress = async (
   }
 };
 
-// Notes Collection
+// Notes 
 export const notesCollection = (userId: string) => 
   collection(db, 'users', userId, 'notes');
 
@@ -215,11 +214,9 @@ export const getUserNotes = async (userId: string): Promise<UserNote[]> => {
 
 export const getPublicNotes = async (): Promise<UserNote[]> => {
   try {
-    // Get all users first
     const usersSnapshot = await getDocs(collection(db, 'users'));
     const allNotes: UserNote[] = [];
     
-    // For each user, get their public notes
     for (const userDoc of usersSnapshot.docs) {
       const userId = userDoc.id;
       const notesQuery = query(
@@ -238,11 +235,9 @@ export const getPublicNotes = async (): Promise<UserNote[]> => {
         allNotes.push(...userNotes);
       } catch (error) {
         console.error(`Error getting notes for user ${userId}:`, error);
-        // Continue with other users even if one fails
       }
     }
     
-    // Sort all notes by creation date
     allNotes.sort((a, b) => {
       const aTime = a.createdAt?.toDate?.() || a.createdAt;
       const bTime = b.createdAt?.toDate?.() || b.createdAt;
@@ -256,7 +251,6 @@ export const getPublicNotes = async (): Promise<UserNote[]> => {
   }
 };
 
-// User Profile
 export const createUserProfile = async (userData: Omit<UserProfile, 'createdAt' | 'lastLogin'>): Promise<boolean> => {
   try {
     const userDoc = doc(db, 'users', userData.uid);
@@ -301,7 +295,6 @@ export const getUserProfile = async (uid: string): Promise<UserProfile | null> =
   }
 };
 
-// Real-time listeners
 export const subscribeToUserBooks = (userId: string, callback: (books: UserBook[]) => void) => {
   const q = query(booksCollection(userId), orderBy('addedAt', 'desc'));
   return onSnapshot(q, (querySnapshot) => {
