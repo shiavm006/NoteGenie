@@ -4,11 +4,11 @@ NoteGenie is an intelligent study assistant that helps students organize notes, 
 
 ## Features
 
-- 📚 **Book Search & Library Management** - Search and organize your academic books
-- 📝 **Note Upload & Organization** - Upload and manage your study materials
-- 🤖 **AI-Powered Help** - Get assistance from Gemini AI for your studies
-- 👥 **Community Notes** - Share and discover notes from other students
-- 🎨 **Modern UI** - Beautiful, responsive interface with dark theme
+- **Book Search & Library Management** - Search and organize your academic books
+- **Note Upload & Organization** - Upload and manage your study materials
+- **AI-Powered Help** - Get assistance from Gemini AI for your studies
+- **Community Notes** - Share and discover notes from other students
+- **Modern UI** - Beautiful, responsive interface with dark theme
 
 ## Getting Started
 
