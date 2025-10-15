@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Initialize the model
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     // Build the conversation context
     let prompt = `You are Note Ginie, an AI assistant specialized in helping students with their studies, note-taking, and academic work. 
