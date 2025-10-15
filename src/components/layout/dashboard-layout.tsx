@@ -21,7 +21,6 @@ import {
   Settings,
   BookOpen,
   HelpCircle,
-  Upload,
   FileText,
   LogOut,
   Users,
@@ -44,11 +43,6 @@ const menuItems = [
     title: "Ginie Help",
     icon: HelpCircle,
     href: "/ginie-help",
-  },
-  {
-    title: "Upload Notes",
-    icon: Upload,
-    href: "/upload-notes",
   },
   {
     title: "Community Notes",

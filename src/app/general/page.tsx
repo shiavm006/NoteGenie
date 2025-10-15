@@ -114,14 +114,14 @@ export default function General() {
                 </div>
               </Link>
 
-              <Link href="/upload-notes" className="group">
+              <Link href="/ginie-help" className="group">
                 <div className="border border-gray-800 rounded-lg p-6 hover:border-blue-500/50 transition-all duration-300">
                   <div className="flex items-center justify-between mb-4">
                     <FileText className="w-6 h-6 text-blue-400" />
                     <ArrowRight className="w-4 h-4 text-gray-600 group-hover:text-blue-400 group-hover:translate-x-1 transition-all" />
                   </div>
-                  <h3 className="text-white font-medium mb-2">Upload Notes</h3>
-                  <p className="text-gray-400 text-sm">Share your study materials</p>
+                  <h3 className="text-white font-medium mb-2">AI Help</h3>
+                  <p className="text-gray-400 text-sm">Get assistance with your studies</p>
                 </div>
               </Link>
 

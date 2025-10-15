@@ -210,7 +210,6 @@ export default function GinieHelp() {
     { title: 'General', href: '/general', icon: Settings },
     { title: 'Search Books', href: '/search-books', icon: BookOpen },
     { title: 'Ginie Help', href: '/ginie-help', icon: HelpCircle },
-    { title: 'Upload Notes', href: '/upload-notes', icon: Upload },
     { title: 'Community Notes', href: '/publish-notes', icon: Users },
   ];
 
