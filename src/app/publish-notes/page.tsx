@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { HoverEffect } from "@/components/ui/card-hover-effect";
@@ -16,15 +15,11 @@ import {
 } from "@/components/ui/pagination";
 import {
   Search,
-  Filter,
   Users,
-  Calendar,
-  Tag,
   Eye,
   Download,
   Heart,
   Star,
-  User,
   FileText,
 } from "lucide-react";
 import DashboardLayout from '@/components/layout/dashboard-layout';
@@ -626,7 +621,7 @@ export default function CommunityNotes() {
         doc.text('Attachments:', 20, yPosition);
         yPosition += 5;
         
-        note.attachments.forEach((attachment, index) => {
+        note.attachments.forEach((attachment) => {
           if (yPosition > 270) {
             doc.addPage();
             yPosition = 20;

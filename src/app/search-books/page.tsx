@@ -1,9 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, BookOpen, Plus, ExternalLink } from "lucide-react";
+import { Search, BookOpen } from "lucide-react";
 import ExpandableBookCard from "@/components/ui/expandable-book-card";
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import { libraryStorage } from '@/lib/utils';
@@ -175,7 +174,7 @@ export default function SearchBooks() {
         {showingSearchResults && (
           <div className="flex items-center justify-between">
             <p className="text-gray-400">
-              Found {searchResults.length} results for "{searchQuery}"
+              Found {searchResults.length} results for &quot;{searchQuery}&quot;
             </p>
             <Button 
               onClick={() => {

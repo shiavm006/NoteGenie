@@ -13,11 +13,9 @@ import {
   Settings,
   BookOpen,
   HelpCircle,
-  Upload,
   Users,
 } from "lucide-react";
 import { useAuth } from '@/hooks/use-auth';
-import DashboardLayout from '@/components/layout/dashboard-layout';
 import {
   Sidebar,
   SidebarContent,
@@ -25,7 +23,6 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
-  SidebarInset,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,

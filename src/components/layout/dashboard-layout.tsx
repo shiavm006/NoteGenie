@@ -21,7 +21,6 @@ import {
   Settings,
   BookOpen,
   HelpCircle,
-  FileText,
   LogOut,
   Users,
 } from "lucide-react";
