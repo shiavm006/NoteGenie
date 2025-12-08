@@ -37,7 +37,7 @@ User message: ${message}`;
     // Add conversation history for context
     if (conversationHistory && conversationHistory.length > 0) {
       prompt += '\n\nConversation history:\n';
-      conversationHistory.forEach((msg: any) => {
+      conversationHistory.forEach((msg: { type: string; content: string }) => {
         prompt += `${msg.type === 'user' ? 'User' : 'Assistant'}: ${msg.content}\n`;
       });
     }
@@ -45,7 +45,7 @@ User message: ${message}`;
     // Add attachment information if present
     if (attachments && attachments.length > 0) {
       prompt += '\n\nAttachments provided:\n';
-      attachments.forEach((attachment: any) => {
+      attachments.forEach((attachment: { name: string; type: string }) => {
         prompt += `- ${attachment.name} (${attachment.type})\n`;
       });
       prompt += '\nPlease consider the uploaded files in your response.';
